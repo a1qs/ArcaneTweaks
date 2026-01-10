@@ -1,7 +1,8 @@
-package com.livajq.arcananetweaks;
+package com.livajq.arcanetweaks;
 
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -15,12 +16,15 @@ import org.slf4j.Logger;
 public class ArcaneTweaks {
     public static final String MODID = "arcanetweaks";
     public static final String NAME = "ArcaneTweaks";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public ArcaneTweaks(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
         modEventBus.addListener(this::commonSetup);
-        context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        
+        IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
+        
+        context.registerConfig(ModConfig.Type.COMMON, Config.SPEC, MODID + "/arcanetweaks.toml");
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {

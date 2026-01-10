@@ -22,3 +22,10 @@ mandatory=true
 versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="dldungeonsjbg"
+mandatory=true
+versionRange="${minecraft_version_range}"
+ordering="AFTER"
+side="BOTH"
