@@ -36,3 +36,10 @@ mandatory=true
 versionRange="${minecraft_version_range}"
 ordering="AFTER"
 side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="goety"
+mandatory=true
+versionRange="${minecraft_version_range}"
+ordering="AFTER"
+side="BOTH"

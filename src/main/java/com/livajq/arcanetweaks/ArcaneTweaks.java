@@ -1,5 +1,9 @@
 package com.livajq.arcanetweaks;
 
+import com.Polarice3.Goety.api.ritual.RitualType;
+import com.livajq.arcanetweaks.compat.goety.ritualtype.AdeptNetherCustomRitualType;
+import com.livajq.arcanetweaks.compat.goety.ritualtype.EndCustomRitualType;
+import com.livajq.arcanetweaks.compat.goety.ritualtype.ExpertNetherCustomRitualType;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,7 +32,11 @@ public class ArcaneTweaks {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-    
+        event.enqueueWork(() -> {
+            RitualType.addRitualType("end", new EndCustomRitualType());
+            RitualType.addRitualType("adept_nether", new AdeptNetherCustomRitualType());
+            RitualType.addRitualType("expert_nether", new ExpertNetherCustomRitualType());
+        });
     }
     
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
