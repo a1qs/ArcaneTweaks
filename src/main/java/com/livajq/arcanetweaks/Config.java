@@ -59,7 +59,7 @@ public final class Config {
     // Runtime values
     // =========================================================
     
-    public static Set<String> extraAlliesSet = Set.of();
+    public static Set<String> extraAlliesSet;
     public static TagKey<Biome> ritualEndBiome;
     public static TagKey<Biome> ritualAdeptNetherBiome;
     public static TagKey<Biome> ritualExpertNetherBiome;

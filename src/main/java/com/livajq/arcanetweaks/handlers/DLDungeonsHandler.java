@@ -113,7 +113,7 @@ public class DLDungeonsHandler {
             parseThemeTagConfig(file);
             configLoaded = true;
         }
-        catch  (IOException e) {
+        catch (IOException e) {
             ArcaneTweaks.LOGGER.error("Error: failed to load dld_theme_tags.cfg!", e);
         }
     }

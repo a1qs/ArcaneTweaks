@@ -26,20 +26,20 @@ side="BOTH"
 [[dependencies.${mod_id}]]
 modId="dldungeonsjbg"
 mandatory=true
-versionRange="${minecraft_version_range}"
+versionRange="[2.1.2-MC1.20.1,)"
 ordering="AFTER"
 side="BOTH"
 
 [[dependencies.${mod_id}]]
 modId="iceandfire"
 mandatory=true
-versionRange="${minecraft_version_range}"
+versionRange="[2.1.13-1.20.1,)"
 ordering="AFTER"
 side="BOTH"
 
 [[dependencies.${mod_id}]]
 modId="goety"
 mandatory=true
-versionRange="${minecraft_version_range}"
+versionRange="[2.5.43.0,)"
 ordering="AFTER"
 side="BOTH"
