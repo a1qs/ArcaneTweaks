@@ -1,7 +1,7 @@
 package com.livajq.arcanetweaks;
 
 import com.Polarice3.Goety.api.ritual.RitualType;
-import com.livajq.arcanetweaks.client.renderer.TestBossRenderer;
+import com.livajq.arcanetweaks.bossbehavior.BossBehaviorRegistry;
 import com.livajq.arcanetweaks.compat.goety.ritualtype.AdeptNetherCustomRitualType;
 import com.livajq.arcanetweaks.compat.goety.ritualtype.EndCustomRitualType;
 import com.livajq.arcanetweaks.compat.goety.ritualtype.ExpertNetherCustomRitualType;
@@ -40,6 +40,7 @@ public class ArcaneTweaks {
             RitualType.addRitualType("end", new EndCustomRitualType());
             RitualType.addRitualType("adept_nether", new AdeptNetherCustomRitualType());
             RitualType.addRitualType("expert_nether", new ExpertNetherCustomRitualType());
+            BossBehaviorRegistry.init();
         });
     }
     
@@ -48,7 +49,7 @@ public class ArcaneTweaks {
         
         @SubscribeEvent
         public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
-            event.registerEntityRenderer(ArcaneEntities.TEST_BOSS.get(), TestBossRenderer::new);
+            //event.registerEntityRenderer(ArcaneEntities.TEST_BOSS.get(), TestBossRenderer::new);
         }
     }
 }

@@ -1,9 +1,9 @@
 package com.livajq.arcanetweaks.common.capability.bossminion;
 
-import com.livajq.arcanetweaks.common.entity.boss.BossBase;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 import java.util.UUID;
@@ -11,22 +11,22 @@ import java.util.UUID;
 public class BossMinionImp implements BossMinionData {
     
     private UUID bossId;
-    private BossBase bossRef;
+    private LivingEntity bossRef;
     private Level level;
     
     @Override
-    public void setBoss(BossBase boss) {
+    public void setBoss(LivingEntity boss) {
         this.bossRef = boss;
         this.bossId = boss.getUUID();
     }
     
     @Override
-    public BossBase getBoss() {
+    public LivingEntity getBoss() {
         if (bossRef != null) return bossRef;
         if (bossId == null || !(level instanceof ServerLevel server)) return null;
         
         Entity e = server.getEntity(bossId);
-        if (e instanceof BossBase b) {
+        if (e instanceof LivingEntity b) {
             bossRef = b;
             return b;
         }

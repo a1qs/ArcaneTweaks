@@ -65,6 +65,9 @@ dependencies {
     implementation fg.deobf("curse.maven:citadel-${citadel_version}")
     implementation fg.deobf("curse.maven:goety-${goety_version}")
     implementation fg.deobf("curse.maven:curios-${curios_version}")
+    implementation fg.deobf("curse.maven:lendercataclysm-${lendercataclysm_version}")
+    implementation fg.deobf("curse.maven:eeeabs-mobs-${eeeabs_mobs_version}")
+    implementation fg.deobf("curse.maven:lionfish-api-${lionfish_api_version}")
 }
 
 mixin {

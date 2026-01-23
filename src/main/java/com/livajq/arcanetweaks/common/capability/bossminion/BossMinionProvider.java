@@ -1,7 +1,6 @@
 package com.livajq.arcanetweaks.common.capability.bossminion;
 
 import com.livajq.arcanetweaks.common.capability.ArcaneCapabilities;
-import com.mojang.datafixers.types.templates.Tag;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
@@ -33,5 +32,3 @@ public class BossMinionProvider implements ICapabilityProvider, INBTSerializable
         return backend;
     }
 }
-
-
