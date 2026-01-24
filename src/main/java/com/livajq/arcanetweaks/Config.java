@@ -9,9 +9,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = ArcaneTweaks.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class Config {
@@ -27,10 +26,11 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_END_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_ADEPT_NETHER_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_EXPERT_NETHER_BIOMETAG;
+    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> EXTRA_PLANT_SURFACES;
     
     
     static {
-        BUILDER.push("General");
+        BUILDER.push("Dread Mobs");
         
         EXTRA_ALLIES = BUILDER
                 .comment("Entities treated as allies by dread mobs")
@@ -51,6 +51,23 @@ public final class Config {
         RITUAL_EXPERT_NETHER_BIOMETAG = BUILDER.comment("Biome tag that allows the 'Expert Nether' ritual to be performed").define("ritualExpertNetherBiome", "minecraft:is_taiga");
         
         BUILDER.pop();
+        BUILDER.push("canSustainPlant Rules");
+        BUILDER.comment("The following can be used to add additional blocks for plants to be placed on");
+        
+        EXTRA_PLANT_SURFACES = BUILDER
+                .comment(
+                        "Format: plant - block1, block2, block3...",
+                        "Example: betterend:dragon_tree_sapling - minecraft:stone, minecraft:grass_block, minecraft:end_stone"
+                )
+                .defineListAllowEmpty(
+                        List.of("extraPlantSurfaces"),
+                        List.of("betterend:dragon_tree_sapling - minecraft:stone, minecraft:grass_block, minecraft:end_stone",
+                                "betterend:tenanea_sapling - minecraft:obsidian, minecraft:prismarine"
+                        ),
+                        o -> o instanceof String
+                );
+       
+        BUILDER.pop();
         
         SPEC = BUILDER.build();
     }
@@ -63,6 +80,7 @@ public final class Config {
     public static TagKey<Biome> ritualEndBiome;
     public static TagKey<Biome> ritualAdeptNetherBiome;
     public static TagKey<Biome> ritualExpertNetherBiome;
+    public static Map<ResourceLocation, Set<ResourceLocation>> extraPlantSurfaces = new HashMap<>();
     
     // =========================================================
     // Sync
@@ -76,5 +94,29 @@ public final class Config {
         ritualEndBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_END_BIOMETAG.get()));
         ritualAdeptNetherBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_ADEPT_NETHER_BIOMETAG.get()));
         ritualExpertNetherBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_EXPERT_NETHER_BIOMETAG.get()));
+        extraPlantSurfaces = parsePlantSurfaces();
+    }
+    
+    // =========================================================
+    // Helpers
+    // =========================================================
+    
+    private static Map<ResourceLocation, Set<ResourceLocation>> parsePlantSurfaces() {
+        Map<ResourceLocation, Set<ResourceLocation>> map = new HashMap<>();
+        
+        for (String line : EXTRA_PLANT_SURFACES.get()) {
+            String[] split = line.split("-");
+            if (split.length != 2) continue;
+            
+            ResourceLocation plantId = new ResourceLocation(split[0].trim());
+            
+            Set<ResourceLocation> blocks = Arrays.stream(split[1].split(","))
+                    .map(String::trim)
+                    .map(ResourceLocation::new)
+                    .collect(Collectors.toSet());
+            
+            map.put(plantId, blocks);
+        }
+        return map;
     }
 }

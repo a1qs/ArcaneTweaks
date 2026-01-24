@@ -68,6 +68,9 @@ dependencies {
     implementation fg.deobf("curse.maven:lendercataclysm-${lendercataclysm_version}")
     implementation fg.deobf("curse.maven:eeeabs-mobs-${eeeabs_mobs_version}")
     implementation fg.deobf("curse.maven:lionfish-api-${lionfish_api_version}")
+    implementation fg.deobf("curse.maven:betterend-forge-${better_end_version}")
+    implementation fg.deobf("curse.maven:bclib-forge-${bclib_forge_version}")
+    implementation fg.deobf("curse.maven:wunderlib-forge-${wunderlib_forge_version}")
 }
 
 mixin {

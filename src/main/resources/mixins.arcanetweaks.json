@@ -5,7 +5,18 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "arcanetweaks.refmap.json",
   "mixins": [
-	"dldungeonsjbg.ThemeMixin"
+	"dldungeonsjbg.ThemeMixin",
+    "vanilla.BlockStateBaseMixin",
+    "betterend.DragonTreeFeatureMixin",
+    "betterend.GiganticAmaranitaFeatureMixin",
+    "betterend.HelixTreeFeatureMixin",
+    "betterend.JellyshroomFeatureMixin",
+    "betterend.LacugroveFeatureMixin",
+    "betterend.LucerniaFeatureMixin",
+    "betterend.MossyGlowshroomFeatureMixin",
+    "betterend.PythadendronTreeFeatureMixin",
+    "betterend.TenaneaFeatureMixin",
+    "betterend.UmbrellaTreeFeatureMixin"
   ],
   "client": []
 }
