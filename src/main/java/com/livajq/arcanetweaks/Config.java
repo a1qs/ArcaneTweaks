@@ -1,6 +1,7 @@
 package com.livajq.arcanetweaks;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
@@ -23,11 +24,11 @@ public final class Config {
     // =========================================================
     
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> EXTRA_ALLIES;
+    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> EXTRA_PLANT_SURFACES;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_END_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_ADEPT_NETHER_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_EXPERT_NETHER_BIOMETAG;
-    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> EXTRA_PLANT_SURFACES;
-    
+    private static final ForgeConfigSpec.ConfigValue<String> APOSTLE_SUPPERBOSS_BIOME;
     
     static {
         BUILDER.push("Dread Mobs");
@@ -69,6 +70,12 @@ public final class Config {
        
         BUILDER.pop();
         
+        BUILDER.push("Apostle");
+        
+        APOSTLE_SUPPERBOSS_BIOME = BUILDER.comment("Biome in which a special variant of the Apostle boss can spawn").define("apostleSuperbossBiome", "biomesoplenty:volcano");
+        
+        BUILDER.pop();
+        
         SPEC = BUILDER.build();
     }
     
@@ -77,10 +84,11 @@ public final class Config {
     // =========================================================
     
     public static Set<String> extraAlliesSet;
+    public static Map<ResourceLocation, Set<ResourceLocation>> extraPlantSurfaces = new HashMap<>();
     public static TagKey<Biome> ritualEndBiome;
     public static TagKey<Biome> ritualAdeptNetherBiome;
     public static TagKey<Biome> ritualExpertNetherBiome;
-    public static Map<ResourceLocation, Set<ResourceLocation>> extraPlantSurfaces = new HashMap<>();
+    public static ResourceKey<Biome> apostleSuperbossBiome;
     
     // =========================================================
     // Sync
@@ -91,10 +99,11 @@ public final class Config {
         if (event.getConfig().getSpec() != SPEC) return;
         
         extraAlliesSet = new HashSet<>(EXTRA_ALLIES.get());
+        extraPlantSurfaces = parsePlantSurfaces();
         ritualEndBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_END_BIOMETAG.get()));
         ritualAdeptNetherBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_ADEPT_NETHER_BIOMETAG.get()));
         ritualExpertNetherBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_EXPERT_NETHER_BIOMETAG.get()));
-        extraPlantSurfaces = parsePlantSurfaces();
+        apostleSuperbossBiome = ResourceKey.create(Registries.BIOME, new ResourceLocation(Config.APOSTLE_SUPPERBOSS_BIOME.get()));
     }
     
     // =========================================================

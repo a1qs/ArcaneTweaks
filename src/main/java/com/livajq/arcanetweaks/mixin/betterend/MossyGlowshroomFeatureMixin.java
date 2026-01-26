@@ -1,18 +1,13 @@
 package com.livajq.arcanetweaks.mixin.betterend;
 
-import com.livajq.arcanetweaks.Config;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
+import com.livajq.arcanetweaks.util.BetterEndUtils;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.betterx.betterend.registry.EndBlocks;
 import org.betterx.betterend.world.features.trees.MossyGlowshroomFeature;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-
-import java.util.Set;
 
 @Mixin(MossyGlowshroomFeature.class)
 public abstract class MossyGlowshroomFeatureMixin {
@@ -21,21 +16,11 @@ public abstract class MossyGlowshroomFeatureMixin {
             method = "place",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/block/state/BlockState;is(Lnet/minecraft/tags/TagKey;)Z"
+                    target = "Lnet/minecraft/world/level/block/state/BlockState;is(Lnet/minecraft/world/level/block/Block;)Z"
             )
     )
-    private boolean arcane$allowMoreGrounds(BlockState state, TagKey<Block> tag) {
-        ResourceLocation plantId = ForgeRegistries.BLOCKS.getKey(EndBlocks.MOSSY_GLOWSHROOM_SAPLING);
-        Set<ResourceLocation> allowed = Config.extraPlantSurfaces.get(plantId);
-        
-        if (allowed != null) {
-            ResourceLocation blockId = ForgeRegistries.BLOCKS.getKey(state.getBlock());
-            
-            if (blockId != null && allowed.contains(blockId)) {
-                return true;
-            }
-        }
-        
-        return state.is(tag);
+    private boolean arcane$allowMoreGroundsBlock(BlockState state, Block block) {
+        return BetterEndUtils.isProperSurfaceOrBlock(EndBlocks.MOSSY_GLOWSHROOM_SAPLING, state, block);
     }
+    
 }

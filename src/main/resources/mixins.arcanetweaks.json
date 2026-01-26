@@ -16,7 +16,8 @@
     "betterend.MossyGlowshroomFeatureMixin",
     "betterend.PythadendronTreeFeatureMixin",
     "betterend.TenaneaFeatureMixin",
-    "betterend.UmbrellaTreeFeatureMixin"
+    "betterend.UmbrellaTreeFeatureMixin",
+    "goety.ApostleMixin"
   ],
   "client": []
 }
