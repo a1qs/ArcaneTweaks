@@ -21,6 +21,6 @@ public abstract class DragonTreeFeatureMixin {
             )
     )
     private boolean arcane$allowMoreGrounds(BlockState state, TagKey<Block> tag) {
-        return BetterEndUtils.isProperSurfaceOrTag(EndBlocks.SMALL_JELLYSHROOM, state, tag);
+        return BetterEndUtils.isProperSurfaceOrTag(EndBlocks.DRAGON_TREE_SAPLING, state, tag);
     }
 }
