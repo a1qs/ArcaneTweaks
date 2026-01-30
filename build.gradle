@@ -71,6 +71,7 @@ dependencies {
     implementation fg.deobf("curse.maven:betterend-forge-${better_end_version}")
     implementation fg.deobf("curse.maven:bclib-forge-${bclib_forge_version}")
     implementation fg.deobf("curse.maven:wunderlib-forge-${wunderlib_forge_version}")
+    implementation fg.deobf("curse.maven:reskillable-reimagined-${reskillable_reimagined_version}")
 }
 
 mixin {
