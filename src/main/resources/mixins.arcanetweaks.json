@@ -18,7 +18,8 @@
     "betterend.TenaneaFeatureMixin",
     "betterend.UmbrellaTreeFeatureMixin",
     "goety.ApostleMixin",
-    "reskillable.SkillAttributeBonusMixin"
+    "reskillable.SkillAttributeBonusMixin",
+    "ironsspellbooks.FurledMapItemMixin"
   ],
   "client": []
 }

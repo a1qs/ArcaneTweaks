@@ -72,6 +72,9 @@ dependencies {
     implementation fg.deobf("curse.maven:bclib-forge-${bclib_forge_version}")
     implementation fg.deobf("curse.maven:wunderlib-forge-${wunderlib_forge_version}")
     implementation fg.deobf("curse.maven:reskillable-reimagined-${reskillable_reimagined_version}")
+    implementation fg.deobf("curse.maven:irons-spells-n-spellbooks-${irons_spells_version}")
+    implementation fg.deobf("curse.maven:playeranimator-${playeranimator_version}")
+    implementation fg.deobf("curse.maven:geckolib-${geckolib_version}")
 }
 
 mixin {
