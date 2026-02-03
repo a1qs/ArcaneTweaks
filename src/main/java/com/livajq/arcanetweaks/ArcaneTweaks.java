@@ -6,6 +6,7 @@ import com.livajq.arcanetweaks.compat.goety.ritualtype.AdeptNetherCustomRitualTy
 import com.livajq.arcanetweaks.compat.goety.ritualtype.EndCustomRitualType;
 import com.livajq.arcanetweaks.compat.goety.ritualtype.ExpertNetherCustomRitualType;
 import com.livajq.arcanetweaks.init.ArcaneEntities;
+import com.livajq.arcanetweaks.init.ArcaneSounds;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -31,6 +32,7 @@ public class ArcaneTweaks {
         
         ArcaneEntities.ENTITY_TYPES.register(modEventBus);
         modEventBus.addListener(ArcaneEntities::onRegisterAttributes);
+        ArcaneSounds.SOUNDS.register(modEventBus);
         
         context.registerConfig(ModConfig.Type.COMMON, Config.SPEC, MODID + "/arcanetweaks.toml");
     }

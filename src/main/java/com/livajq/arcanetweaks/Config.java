@@ -1,10 +1,12 @@
 package com.livajq.arcanetweaks;
 
+import com.livajq.arcanetweaks.mobs.MobStats;
 import net.bandit.reskillable.common.commands.skills.SkillAttributeBonus;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -31,6 +33,7 @@ public final class Config {
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> EXTRA_PLANT_SURFACES;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_TEMPERATURE_IMMUNITY;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_THIRST_IMMUNITY;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> MOB_ATTRIBUTE_MODIFIERS;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_END_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_ADEPT_NETHER_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_EXPERT_NETHER_BIOMETAG;
@@ -130,6 +133,22 @@ public final class Config {
         
         BUILDER.pop();
         
+        BUILDER.push("Mob attribute modifiers");
+        BUILDER.comment("Attribute multipliers for mobs. 1.0 is default (100%) scaling");
+        
+        MOB_ATTRIBUTE_MODIFIERS = BUILDER
+                .comment("Format: id - stat1=val stat2=val stat3=val",
+                        "Example: iceandfire:dread_beast - attack=1.3 armor=0.5 health=1.2 speed=2.0 follow=1.35"
+                )
+                .defineListAllowEmpty(
+                        List.of("mobAttributeModifiers"),
+                        List.of(
+                                "iceandfire:dread_beast - attack=1.3 armor=0.5 health=1.2 speed=2.0 follow=1.35",
+                                "minecraft:wolf - health=2.0"
+                        ),
+                        o -> o instanceof String
+                );
+        
         SPEC = BUILDER.build();
     }
     
@@ -142,6 +161,7 @@ public final class Config {
     public static Set<String> foodThirstImmunitySet;
     public static Map<ResourceLocation, Set<ResourceLocation>> extraPlantSurfaces = new HashMap<>();
     public static Map<SkillAttributeBonus, Supplier<Attribute>> reskillableAttributeBonuses = new HashMap<>();
+    public static Map<EntityType<?>, MobStats> mobAttributeModifiers = new HashMap<>();
     public static TagKey<Biome> ritualEndBiome;
     public static TagKey<Biome> ritualAdeptNetherBiome;
     public static TagKey<Biome> ritualExpertNetherBiome;
@@ -160,6 +180,7 @@ public final class Config {
         foodThirstImmunitySet = new HashSet<>(FOOD_THIRST_IMMUNITY.get());
         extraPlantSurfaces = parsePlantSurfaces();
         reskillableAttributeBonuses = parseReskillableBonuses();
+        mobAttributeModifiers = parseMobAttributeModifiers();
         ritualEndBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_END_BIOMETAG.get()));
         ritualAdeptNetherBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_ADEPT_NETHER_BIOMETAG.get()));
         ritualExpertNetherBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_EXPERT_NETHER_BIOMETAG.get()));
@@ -216,11 +237,51 @@ public final class Config {
         Attribute attr = ForgeRegistries.ATTRIBUTES.getValue(rl);
         
         if (attr == null) {
-            System.err.println("[ArcaneTweaks] Invalid attribute ID in config: " + id + " for skill " + bonus.name());
+            ArcaneTweaks.LOGGER.warn("[ArcaneTweaks] Invalid attribute ID in config: " + id + " for skill " + bonus.name());
             map.put(bonus, () -> null);
             return;
         }
         
         map.put(bonus, () -> attr);
+    }
+    
+    public static Map<EntityType<?>, MobStats> parseMobAttributeModifiers() {
+        Map<EntityType<?>, MobStats> map = new HashMap<>();
+        
+        for (String line : MOB_ATTRIBUTE_MODIFIERS.get()) {
+            if (!line.contains("-")) continue;
+            
+            String[] split = line.split("-", 2);
+            String idPart = split[0].trim();
+            String statsPart = split[1].trim();
+            
+            ResourceLocation id = new ResourceLocation(idPart);
+            EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(id);
+            if (type == null) {
+                ArcaneTweaks.LOGGER.warn("[ArcaneTweaks] Unknown entity type in config: " + id);
+                continue;
+            }
+            
+            double attack = 1, armor = 1, health = 1, speed = 1, follow = 1;
+            
+            for (String token : statsPart.split(" ")) {
+                if (!token.contains("=")) continue;
+                
+                String[] kv = token.split("=", 2);
+                String key = kv[0];
+                double val = Double.parseDouble(kv[1]);
+                
+                switch (key) {
+                    case "attack" -> attack = val;
+                    case "armor" -> armor = val;
+                    case "health" -> health = val;
+                    case "speed" -> speed = val;
+                    case "follow" -> follow = val;
+                }
+            }
+            
+            map.put(type, new MobStats(attack, armor, health, speed, follow));
+        }
+        return map;
     }
 }
