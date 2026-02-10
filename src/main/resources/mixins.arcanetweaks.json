@@ -19,7 +19,8 @@
     "betterend.UmbrellaTreeFeatureMixin",
     "goety.ApostleMixin",
     "reskillable.SkillAttributeBonusMixin",
-    "ironsspellbooks.FurledMapItemMixin"
+    "ironsspellbooks.FurledMapItemMixin",
+    "alexscaves.ACBiomeRegistryMixin"
   ],
   "client": []
 }

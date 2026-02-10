@@ -2,15 +2,18 @@ package com.livajq.arcanetweaks;
 
 import com.Polarice3.Goety.api.ritual.RitualType;
 import com.livajq.arcanetweaks.bossbehavior.BossBehaviorRegistry;
+import com.livajq.arcanetweaks.compat.alexscaves.BiomeConfigLoader;
 import com.livajq.arcanetweaks.compat.goety.ritualtype.AdeptNetherCustomRitualType;
 import com.livajq.arcanetweaks.compat.goety.ritualtype.EndCustomRitualType;
 import com.livajq.arcanetweaks.compat.goety.ritualtype.ExpertNetherCustomRitualType;
+import com.livajq.arcanetweaks.handlers.ResourceReloadHandler;
 import com.livajq.arcanetweaks.init.ArcaneEntities;
 import com.livajq.arcanetweaks.init.ArcaneSounds;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,11 +32,11 @@ public class ArcaneTweaks {
         IEventBus modEventBus = context.getModEventBus();
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
         modEventBus.addListener(this::commonSetup);
+        forgeEventBus.addListener(this::reloadListener);
         
         ArcaneEntities.ENTITY_TYPES.register(modEventBus);
         modEventBus.addListener(ArcaneEntities::onRegisterAttributes);
         ArcaneSounds.SOUNDS.register(modEventBus);
-        
         context.registerConfig(ModConfig.Type.COMMON, Config.SPEC, MODID + "/arcanetweaks.toml");
     }
 
@@ -43,7 +46,12 @@ public class ArcaneTweaks {
             RitualType.addRitualType("adept_nether", new AdeptNetherCustomRitualType());
             RitualType.addRitualType("expert_nether", new ExpertNetherCustomRitualType());
             BossBehaviorRegistry.init();
+            BiomeConfigLoader.init();
         });
+    }
+    
+    private void reloadListener(AddReloadListenerEvent event) {
+        event.addListener(new ResourceReloadHandler());
     }
     
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

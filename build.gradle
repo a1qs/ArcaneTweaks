@@ -75,6 +75,7 @@ dependencies {
     implementation fg.deobf("curse.maven:irons-spells-n-spellbooks-${irons_spells_version}")
     implementation fg.deobf("curse.maven:playeranimator-${playeranimator_version}")
     implementation fg.deobf("curse.maven:geckolib-${geckolib_version}")
+    implementation fg.deobf("curse.maven:alexs-caves-${alexs_caves_version}")
 }
 
 mixin {
