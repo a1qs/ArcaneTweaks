@@ -2,6 +2,7 @@ package com.livajq.arcanetweaks;
 
 import com.Polarice3.Goety.api.ritual.RitualType;
 import com.livajq.arcanetweaks.bossbehavior.BossBehaviorRegistry;
+import com.livajq.arcanetweaks.client.renderer.dimensioneffects.EndSkyboxEffects;
 import com.livajq.arcanetweaks.compat.alexscaves.BiomeConfigLoader;
 import com.livajq.arcanetweaks.compat.goety.ritualtype.AdeptNetherCustomRitualType;
 import com.livajq.arcanetweaks.compat.goety.ritualtype.EndCustomRitualType;
@@ -10,8 +11,9 @@ import com.livajq.arcanetweaks.handlers.ResourceReloadHandler;
 import com.livajq.arcanetweaks.init.ArcaneEntities;
 import com.livajq.arcanetweaks.init.ArcaneSounds;
 import com.mojang.logging.LogUtils;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -20,6 +22,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.betterx.betterend.client.render.BetterEndSkyEffect;
 import org.slf4j.Logger;
 
 @Mod(ArcaneTweaks.MODID)
@@ -58,8 +61,9 @@ public class ArcaneTweaks {
     public static class ClientModEvents {
         
         @SubscribeEvent
-        public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
-            //event.registerEntityRenderer(ArcaneEntities.TEST_BOSS.get(), TestBossRenderer::new);
+        public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event) {
+            event.register(new ResourceLocation(MODID, "the_end_skybox"), new EndSkyboxEffects());
+            event.register(new ResourceLocation("minecraft", "the_end"), new BetterEndSkyEffect());
         }
     }
 }

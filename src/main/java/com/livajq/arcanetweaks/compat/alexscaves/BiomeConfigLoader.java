@@ -25,9 +25,9 @@ import java.util.Map;
 public class BiomeConfigLoader {
     
     private static final String FILE_NAME = "biome_visual_overrides.toml";
-    public static List<BiomeConfig> biomeConfigs = new ArrayList<>();
-    public static Map<ResourceKey<Biome>, BiomeConfig> idOverrides = new HashMap<>();
-    public static Map<TagKey<Biome>, BiomeConfig> tagOverrides = new HashMap<>();
+    private static List<BiomeConfig> biomeConfigs = new ArrayList<>();
+    private static Map<ResourceKey<Biome>, BiomeConfig> idOverrides = new HashMap<>();
+    private static Map<TagKey<Biome>, BiomeConfig> tagOverrides = new HashMap<>();
     public static Map<ResourceKey<Biome>, BiomeConfig> lookupOverrides = new HashMap<>();
     
     public static void init() {
