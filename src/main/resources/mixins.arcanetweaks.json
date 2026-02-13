@@ -7,6 +7,7 @@
   "mixins": [
 	"dldungeonsjbg.ThemeMixin",
     "vanilla.BlockStateBaseMixin",
+    "vanilla.ChunkGeneratorAccessor",
     "betterend.DragonTreeFeatureMixin",
     "betterend.GiganticAmaranitaFeatureMixin",
     "betterend.HelixTreeFeatureMixin",

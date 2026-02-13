@@ -8,9 +8,11 @@ import com.livajq.arcanetweaks.compat.goety.ritualtype.AdeptNetherCustomRitualTy
 import com.livajq.arcanetweaks.compat.goety.ritualtype.EndCustomRitualType;
 import com.livajq.arcanetweaks.compat.goety.ritualtype.ExpertNetherCustomRitualType;
 import com.livajq.arcanetweaks.handlers.ResourceReloadHandler;
+import com.livajq.arcanetweaks.init.ArcaneBiomeSources;
 import com.livajq.arcanetweaks.init.ArcaneEntities;
 import com.livajq.arcanetweaks.init.ArcaneSounds;
 import com.mojang.logging.LogUtils;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
@@ -22,6 +24,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.RegisterEvent;
 import org.betterx.betterend.client.render.BetterEndSkyEffect;
 import org.slf4j.Logger;
 
@@ -35,11 +38,14 @@ public class ArcaneTweaks {
         IEventBus modEventBus = context.getModEventBus();
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::onRegister);
         forgeEventBus.addListener(this::reloadListener);
         
         ArcaneEntities.ENTITY_TYPES.register(modEventBus);
         modEventBus.addListener(ArcaneEntities::onRegisterAttributes);
         ArcaneSounds.SOUNDS.register(modEventBus);
+        modEventBus.addListener(this::onRegister);
+        
         context.registerConfig(ModConfig.Type.COMMON, Config.SPEC, MODID + "/arcanetweaks.toml");
     }
 
@@ -55,6 +61,10 @@ public class ArcaneTweaks {
     
     private void reloadListener(AddReloadListenerEvent event) {
         event.addListener(new ResourceReloadHandler());
+    }
+    
+    private void onRegister(RegisterEvent event) {
+        event.register(Registries.BIOME_SOURCE, ArcaneBiomeSources::register);
     }
     
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

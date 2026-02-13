@@ -2,6 +2,8 @@ package com.livajq.arcanetweaks.handlers;
 
 import com.eeeab.eeeabsmobs.sever.init.ItemInit;
 import com.livajq.arcanetweaks.ArcaneTweaks;
+import com.livajq.arcanetweaks.mixin.vanilla.ChunkGeneratorAccessor;
+import com.livajq.arcanetweaks.world.district.DistrictBiomeSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -11,9 +13,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -55,5 +61,24 @@ public class OtherHandler {
                 return e;
             }
         });
+    }
+    
+    //replace vanilla BiomeSource
+    //I probably just don't know how to do it like a normal person but json overrides caused modded biomes to stop generating
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onLevelLoad(LevelEvent.Load event) {
+        if (!(event.getLevel() instanceof ServerLevel level)) return;
+        if (!level.dimension().equals(Level.OVERWORLD)) return;
+        
+        replaceOverworldBiomeSource(level);
+    }
+    
+    private static void replaceOverworldBiomeSource(ServerLevel level) {
+        ChunkGenerator generator = level.getChunkSource().getGenerator();
+        
+        BiomeSource vanilla = generator.getBiomeSource();
+        BiomeSource wrapped = new DistrictBiomeSource(vanilla, level.getSeed());
+
+        ((ChunkGeneratorAccessor) generator).setBiomeSource(wrapped);
     }
 }
