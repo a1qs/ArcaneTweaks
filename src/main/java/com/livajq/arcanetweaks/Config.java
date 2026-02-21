@@ -6,6 +6,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.level.biome.Biome;
@@ -46,6 +47,7 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<String> RESKILLABLE_DEFENSE_BONUS;
     private static final ForgeConfigSpec.ConfigValue<String> RESKILLABLE_AGILITY_BONUS;
     private static final ForgeConfigSpec.ConfigValue<String> RESKILLABLE_MAGIC_BONUS;
+    private static final ForgeConfigSpec.ConfigValue<Integer> WORLDGEN_TYPE;
     
     static {
         BUILDER.push("Dread Mobs");
@@ -149,6 +151,15 @@ public final class Config {
                         o -> o instanceof String
                 );
         
+        BUILDER.pop();
+        
+        BUILDER.push("Misc");
+        
+        WORLDGEN_TYPE = BUILDER
+                .comment("World generation type",
+                "0: Default (vanilla), 1: Arcane, 2: Biome Blend")
+                .define("worldgenType", 1);
+        
         SPEC = BUILDER.build();
     }
     
@@ -166,6 +177,7 @@ public final class Config {
     public static TagKey<Biome> ritualAdeptNetherBiome;
     public static TagKey<Biome> ritualExpertNetherBiome;
     public static ResourceKey<Biome> apostleSuperbossBiome;
+    public static int worldgenType;
     
     // =========================================================
     // Sync
@@ -184,7 +196,8 @@ public final class Config {
         ritualEndBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_END_BIOMETAG.get()));
         ritualAdeptNetherBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_ADEPT_NETHER_BIOMETAG.get()));
         ritualExpertNetherBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_EXPERT_NETHER_BIOMETAG.get()));
-        apostleSuperbossBiome = ResourceKey.create(Registries.BIOME, new ResourceLocation(Config.APOSTLE_SUPPERBOSS_BIOME.get()));
+        apostleSuperbossBiome = ResourceKey.create(Registries.BIOME, new ResourceLocation(APOSTLE_SUPPERBOSS_BIOME.get()));
+        worldgenType = Mth.clamp(WORLDGEN_TYPE.get(), 0, 2);
     }
     
     // =========================================================

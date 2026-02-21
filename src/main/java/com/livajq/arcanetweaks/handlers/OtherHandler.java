@@ -2,6 +2,7 @@ package com.livajq.arcanetweaks.handlers;
 
 import com.eeeab.eeeabsmobs.sever.init.ItemInit;
 import com.livajq.arcanetweaks.ArcaneTweaks;
+import com.livajq.arcanetweaks.Config;
 import com.livajq.arcanetweaks.mixin.vanilla.ChunkGeneratorAccessor;
 import com.livajq.arcanetweaks.world.district.DistrictBiomeSource;
 import net.minecraft.core.BlockPos;
@@ -67,6 +68,7 @@ public class OtherHandler {
     //I probably just don't know how to do it like a normal person but json overrides caused modded biomes to stop generating
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLevelLoad(LevelEvent.Load event) {
+        if (Config.worldgenType == 0) return;
         if (!(event.getLevel() instanceof ServerLevel level)) return;
         if (!level.dimension().equals(Level.OVERWORLD)) return;
         

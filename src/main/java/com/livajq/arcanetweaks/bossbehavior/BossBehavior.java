@@ -9,7 +9,7 @@ import net.minecraft.world.phys.AABB;
 
 import java.util.*;
 
-public abstract class BossBehavior {
+public abstract class BossBehavior<T extends LivingEntity> {
     
     public final int phaseCount;
     public final double[] thresholds;
@@ -20,11 +20,12 @@ public abstract class BossBehavior {
         this.thresholds = phaseThresholds();
     }
     
-    public void onPhaseTick(LivingEntity boss, int phase) {}
-    public void onPhaseChange(LivingEntity boss, int newPhase, int oldPhase, boolean firstTime) {}
-    public HurtResult onHurt(LivingEntity boss, DamageSource src, float amount) {return HurtResult.pass();}
-    public void onMinionAdded(LivingEntity boss, Mob minion) {}
-    public void onMinionDied(LivingEntity boss, Mob minion) {}
+    public void onPhaseTick(T boss, int phase) {}
+    public void onPhaseChange(T boss, int newPhase, int oldPhase, boolean firstTime) {}
+    public HurtResult onHurt(T boss, DamageSource src, float amount) { return HurtResult.pass(); }
+    public void onBossDied(T boss) {}
+    public void onMinionAdded(T boss, Mob minion) {}
+    public void onMinionDied(T boss, Mob minion) {}
     
     protected double[] phaseThresholds() {
         double[] thresholds = new double[phaseCount - 1];
@@ -34,7 +35,7 @@ public abstract class BossBehavior {
         return thresholds;
     }
     
-    public void reconcileMinions(LivingEntity boss) {
+    public void reconcileMinions(T boss) {
         ServerLevel level = (ServerLevel) boss.level();
         
         AABB box = boss.getBoundingBox().inflate(128);

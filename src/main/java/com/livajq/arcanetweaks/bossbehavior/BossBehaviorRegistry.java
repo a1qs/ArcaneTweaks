@@ -1,6 +1,6 @@
 package com.livajq.arcanetweaks.bossbehavior;
 
-import com.github.L_Ender.cataclysm.init.ModEntities;
+import net.miauczel.legendary_monsters.entity.ModEntities;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -9,17 +9,18 @@ import java.util.Map;
 
 public class BossBehaviorRegistry {
     
-    private static final Map<EntityType<?>, BossBehavior> BEHAVIORS = new HashMap<>();
+    private static final Map<EntityType<?>, BossBehavior<? extends LivingEntity>> BEHAVIORS = new HashMap<>();
     
-    public static void register(EntityType<?> type, BossBehavior behavior) {
+    public static <T extends LivingEntity> void register(EntityType<T> type, BossBehavior<T> behavior) {
         BEHAVIORS.put(type, behavior);
     }
     
-    public static BossBehavior get(LivingEntity entity) {
-        return BEHAVIORS.get(entity.getType());
+    @SuppressWarnings("unchecked")
+    public static <T extends LivingEntity> BossBehavior<T> get(T entity) {
+        return (BossBehavior<T>) BEHAVIORS.get(entity.getType());
     }
     
     public static void init() {
-        BossBehaviorRegistry.register(ModEntities.IGNIS.get(), new IgnisBehavior());
+        register(ModEntities.THE_OBLITERATOR.get(), new ObliteratorBehavior());
     }
 }
