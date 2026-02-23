@@ -145,7 +145,7 @@ public final class Config {
         
         MOB_ATTRIBUTE_MODIFIERS = BUILDER
                 .comment("Format: id - stat1=val stat2=val stat3=val",
-                        "Example: iceandfire:dread_beast - attack=1.3 armor=0.5 health=1.2 speed=2.0 follow=1.35 tick = 1.25"
+                        "Example: iceandfire:dread_beast - attack=1.3 armor=0.5 health=1.2 speed=2.0 follow=1.35 tick=1.25"
                 )
                 .defineListAllowEmpty(
                         List.of("mobAttributeModifiers"),
