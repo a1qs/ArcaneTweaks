@@ -141,11 +141,11 @@ public final class Config {
         BUILDER.pop();
         
         BUILDER.push("Mob attribute modifiers");
-        BUILDER.comment("Attribute multipliers for mobs. 1.0 is default (100%) scaling");
+        BUILDER.comment("Attribute (and tick speed) multipliers for mobs. 1.0 is default (100%) scaling");
         
         MOB_ATTRIBUTE_MODIFIERS = BUILDER
                 .comment("Format: id - stat1=val stat2=val stat3=val",
-                        "Example: iceandfire:dread_beast - attack=1.3 armor=0.5 health=1.2 speed=2.0 follow=1.35"
+                        "Example: iceandfire:dread_beast - attack=1.3 armor=0.5 health=1.2 speed=2.0 follow=1.35 tick = 1.25"
                 )
                 .defineListAllowEmpty(
                         List.of("mobAttributeModifiers"),
@@ -282,7 +282,7 @@ public final class Config {
                 continue;
             }
             
-            double attack = 1, armor = 1, health = 1, speed = 1, follow = 1;
+            double attack = 1, armor = 1, health = 1, speed = 1, follow = 1, tick = 1;
             
             for (String token : statsPart.split(" ")) {
                 if (!token.contains("=")) continue;
@@ -297,10 +297,11 @@ public final class Config {
                     case "health" -> health = val;
                     case "speed" -> speed = val;
                     case "follow" -> follow = val;
+                    case "tick" -> tick = val;
                 }
             }
             
-            map.put(type, new MobStats(attack, armor, health, speed, follow));
+            map.put(type, new MobStats(attack, armor, health, speed, follow, tick));
         }
         return map;
     }

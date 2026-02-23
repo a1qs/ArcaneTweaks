@@ -8,6 +8,8 @@
 	"dldungeonsjbg.ThemeMixin",
     "vanilla.BlockStateBaseMixin",
     "vanilla.ChunkGeneratorAccessor",
+    "vanilla.ServerLevelMixin",
+    "vanilla.LivingEntityMixin",
     "betterend.DragonTreeFeatureMixin",
     "betterend.GiganticAmaranitaFeatureMixin",
     "betterend.HelixTreeFeatureMixin",
@@ -21,7 +23,8 @@
     "goety.ApostleMixin",
     "reskillable.SkillAttributeBonusMixin",
     "ironsspellbooks.FurledMapItemMixin",
-    "alexscaves.ACBiomeRegistryMixin"
+    "alexscaves.ACBiomeRegistryMixin",
+    "legendarymonsters.TheObliteratorEntityMixin"
   ],
   "client": []
 }
