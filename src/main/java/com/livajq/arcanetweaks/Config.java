@@ -48,6 +48,7 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<String> RESKILLABLE_AGILITY_BONUS;
     private static final ForgeConfigSpec.ConfigValue<String> RESKILLABLE_MAGIC_BONUS;
     private static final ForgeConfigSpec.ConfigValue<Integer> WORLDGEN_TYPE;
+    private static final ForgeConfigSpec.ConfigValue<Double> OBLITERATOR_DAMAGE_CAP;
     
     static {
         BUILDER.push("Dread Mobs");
@@ -89,9 +90,13 @@ public final class Config {
        
         BUILDER.pop();
         
-        BUILDER.push("Apostle");
+        BUILDER.push("Bosses");
         
+        BUILDER.comment("[Apostle]");
         APOSTLE_SUPPERBOSS_BIOME = BUILDER.comment("Biome in which a special variant of the Apostle boss can spawn").define("apostleSuperbossBiome", "biomesoplenty:volcano");
+        
+        BUILDER.comment("[Obliterator]");
+        OBLITERATOR_DAMAGE_CAP = BUILDER.comment("Maximum damage the Obliterator boss can receive per hit").define("obliteratorDamageCap", 200.0D);
         
         BUILDER.pop();
         
@@ -178,6 +183,7 @@ public final class Config {
     public static TagKey<Biome> ritualExpertNetherBiome;
     public static ResourceKey<Biome> apostleSuperbossBiome;
     public static int worldgenType;
+    public static double obliteratorDamageCap;
     
     // =========================================================
     // Sync
@@ -198,6 +204,7 @@ public final class Config {
         ritualExpertNetherBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_EXPERT_NETHER_BIOMETAG.get()));
         apostleSuperbossBiome = ResourceKey.create(Registries.BIOME, new ResourceLocation(APOSTLE_SUPPERBOSS_BIOME.get()));
         worldgenType = Mth.clamp(WORLDGEN_TYPE.get(), 0, 2);
+        obliteratorDamageCap = OBLITERATOR_DAMAGE_CAP.get();
     }
     
     // =========================================================

@@ -5,6 +5,7 @@ import net.miauczel.legendary_monsters.entity.AnimatedMonster.IAnimatedBoss.TheO
 import net.miauczel.legendary_monsters.entity.ModEntities;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -12,7 +13,10 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
 import java.util.List;
@@ -34,6 +38,7 @@ public class ObliteratorBehavior extends BossBehavior<TheObliteratorEntity> {
                         if (obliterator.tickCount < 100) return;
                         if (boss == null || boss.isRemoved() || boss.isDeadOrDying()) obliterator.discard();
                     });
+            return;
         }
         
         if (obliterator.tickCount % 20 != 0) return;
@@ -91,21 +96,60 @@ public class ObliteratorBehavior extends BossBehavior<TheObliteratorEntity> {
     private void spawnClone(TheObliteratorEntity boss) {
         ServerLevel level = (ServerLevel) boss.level();
         
-        Mob clone = ModEntities.THE_OBLITERATOR.get().create(level);
+        TheObliteratorEntity clone = ModEntities.THE_OBLITERATOR.get().create(level);
         if (clone == null) return;
         
-        double angle = level.random.nextDouble() * Math.PI * 2;
         double radius = 6.0;
-        double x = boss.getX() + radius * Math.cos(angle);
-        double z = boss.getZ() + radius * Math.sin(angle);
+        int maxTries = 16;
         
-        BlockPos pos = level.getHeightmapPos(
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                BlockPos.containing(x, boss.getY(), z)
+        BlockPos spawnPos = null;
+        
+        for (int i = 0; i < maxTries; i++) {
+            double angle = level.random.nextDouble() * Math.PI * 2;
+            double x = boss.getX() + radius * Math.cos(angle);
+            double z = boss.getZ() + radius * Math.sin(angle);
+            
+            //find ground under that X/Z
+            BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos(
+                    x, boss.getY() + 10, z
+            );
+            
+            while (cursor.getY() > level.getMinBuildHeight() && level.isEmptyBlock(cursor)) {
+                cursor.move(Direction.DOWN);
+            }
+            cursor.move(Direction.UP);
+            BlockPos pos = cursor.immutable();
+            
+            //raytrace from boss eye to the potential spawn spot
+            Vec3 from = boss.getEyePosition();
+            Vec3 to = new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+            
+            ClipContext ctx = new ClipContext(
+                    from, to,
+                    ClipContext.Block.COLLIDER,
+                    ClipContext.Fluid.NONE,
+                    boss
+            );
+            BlockHitResult hit = level.clip(ctx);
+            
+            boolean clear = hit.getType() == HitResult.Type.MISS;
+            
+            if (clear) {
+                spawnPos = pos;
+                break;
+            }
+        }
+        
+        //hard fallback: just put it next to the boss
+        if (spawnPos == null) spawnPos = boss.blockPosition().offset(1, 0, 0);
+        
+        clone.moveTo(
+                spawnPos.getX() + 0.5,
+                spawnPos.getY(),
+                spawnPos.getZ() + 0.5,
+                level.random.nextFloat() * 360F,
+                0F
         );
-        
-        clone.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5,
-                level.random.nextFloat() * 360F, 0F);
         
         clone.getCapability(ArcaneCapabilities.BOSS_MINION)
                 .ifPresent(cap -> cap.setBoss(boss));
@@ -115,15 +159,20 @@ public class ObliteratorBehavior extends BossBehavior<TheObliteratorEntity> {
         clone.getAttribute(Attributes.MAX_HEALTH).setBaseValue(2137);
         clone.setHealth(clone.getMaxHealth());
         clone.setInvulnerable(true);
-        clone.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(boss.getAttributeValue(Attributes.ATTACK_DAMAGE) / 2);
-        clone.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(boss.getAttributeValue(Attributes.MOVEMENT_SPEED) / 2);
+        clone.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(
+                boss.getAttributeValue(Attributes.ATTACK_DAMAGE) / 2
+        );
+        clone.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(
+                boss.getAttributeValue(Attributes.MOVEMENT_SPEED) / 2
+        );
         
         clone.setCustomName(Component.literal("Revenant"));
         
-        level.addFreshEntity(clone);
-        
         LivingEntity target = boss.getTarget();
         if (target != null) clone.setTarget(target);
+        
+        level.addFreshEntity(clone);
+        clone.setPhase(2);
     }
     
     private boolean isClone(TheObliteratorEntity entity) {
