@@ -24,7 +24,8 @@
     "reskillable.SkillAttributeBonusMixin",
     "ironsspellbooks.FurledMapItemMixin",
     "alexscaves.ACBiomeRegistryMixin",
-    "legendarymonsters.TheObliteratorEntityMixin"
+    "legendarymonsters.TheObliteratorEntityMixin",
+    "iceandfire.FrozenDataMixin"
   ],
   "client": []
 }

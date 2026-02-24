@@ -35,6 +35,7 @@ public final class Config {
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_TEMPERATURE_IMMUNITY;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_THIRST_IMMUNITY;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> MOB_ATTRIBUTE_MODIFIERS;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> MOB_FREEZE_IMMUNITY;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_END_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_ADEPT_NETHER_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_EXPERT_NETHER_BIOMETAG;
@@ -49,10 +50,12 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<String> RESKILLABLE_MAGIC_BONUS;
     private static final ForgeConfigSpec.ConfigValue<Integer> WORLDGEN_TYPE;
     private static final ForgeConfigSpec.ConfigValue<Double> OBLITERATOR_DAMAGE_CAP;
+    private static final ForgeConfigSpec.ConfigValue<Float> RESISTANCE_AMOUNT;
     
     static {
-        BUILDER.push("Dread Mobs");
+        BUILDER.push("Mobs");
         
+        BUILDER.push("Dread Mobs");
         EXTRA_ALLIES = BUILDER
                 .comment("Entities treated as allies by dread mobs")
                 .defineListAllowEmpty(
@@ -63,6 +66,38 @@ public final class Config {
                         ),
                         o -> o instanceof String
                 );
+        BUILDER.pop();
+        
+        BUILDER.push("Mob freeze immunity");
+        MOB_FREEZE_IMMUNITY = BUILDER
+                .comment("Mobs immune to the freeze effect")
+                .defineListAllowEmpty(
+                        List.of("mobFreezeImmunity"),
+                        List.of(
+                                "minecraft:villager",
+                                "minecraft:wolf"
+                        ),
+                        o -> o instanceof String
+                );
+        BUILDER.pop();
+        
+        BUILDER.push("Mob attribute modifiers");
+        BUILDER.comment("Attribute (and tick speed) multipliers for mobs. 1.0 is default (100%) scaling");
+        
+        MOB_ATTRIBUTE_MODIFIERS = BUILDER
+                .comment("Format: id - stat1=val stat2=val stat3=val",
+                        "Example: iceandfire:dread_beast - attack=1.3 armor=0.5 health=1.2 speed=2.0 follow=1.35 tick=1.25"
+                )
+                .defineListAllowEmpty(
+                        List.of("mobAttributeModifiers"),
+                        List.of(
+                                "iceandfire:dread_beast - attack=1.3 armor=0.5 health=1.2 speed=2.0 follow=1.35",
+                                "minecraft:wolf - health=2.0"
+                        ),
+                        o -> o instanceof String
+                );
+        
+        BUILDER.pop();
         
         BUILDER.pop();
         BUILDER.push("Rituals");
@@ -92,11 +127,13 @@ public final class Config {
         
         BUILDER.push("Bosses");
         
-        BUILDER.comment("[Apostle]");
+        BUILDER.push("Apostle");
         APOSTLE_SUPPERBOSS_BIOME = BUILDER.comment("Biome in which a special variant of the Apostle boss can spawn").define("apostleSuperbossBiome", "biomesoplenty:volcano");
+        BUILDER.pop();
         
-        BUILDER.comment("[Obliterator]");
+        BUILDER.push("Obliterator");
         OBLITERATOR_DAMAGE_CAP = BUILDER.comment("Maximum damage the Obliterator boss can receive per hit").define("obliteratorDamageCap", 200.0D);
+        BUILDER.pop();
         
         BUILDER.pop();
         
@@ -140,24 +177,6 @@ public final class Config {
         
         BUILDER.pop();
         
-        BUILDER.push("Mob attribute modifiers");
-        BUILDER.comment("Attribute (and tick speed) multipliers for mobs. 1.0 is default (100%) scaling");
-        
-        MOB_ATTRIBUTE_MODIFIERS = BUILDER
-                .comment("Format: id - stat1=val stat2=val stat3=val",
-                        "Example: iceandfire:dread_beast - attack=1.3 armor=0.5 health=1.2 speed=2.0 follow=1.35 tick=1.25"
-                )
-                .defineListAllowEmpty(
-                        List.of("mobAttributeModifiers"),
-                        List.of(
-                                "iceandfire:dread_beast - attack=1.3 armor=0.5 health=1.2 speed=2.0 follow=1.35",
-                                "minecraft:wolf - health=2.0"
-                        ),
-                        o -> o instanceof String
-                );
-        
-        BUILDER.pop();
-        
         BUILDER.push("Misc");
         
         WORLDGEN_TYPE = BUILDER
@@ -165,6 +184,9 @@ public final class Config {
                 "0: Default (vanilla), 1: Arcane, 2: Biome Blend")
                 .define("worldgenType", 1);
         
+        RESISTANCE_AMOUNT = BUILDER.comment("Damage reduced by the resistance effect per level (0 - 1)").define("resistanceAmount",0.1F);
+        
+        BUILDER.pop();
         SPEC = BUILDER.build();
     }
     
@@ -175,6 +197,7 @@ public final class Config {
     public static Set<String> extraAlliesSet;
     public static Set<String> foodTemperatureImmunitySet;
     public static Set<String> foodThirstImmunitySet;
+    public static Set<String> mobFreezeImmunitySet;
     public static Map<ResourceLocation, Set<ResourceLocation>> extraPlantSurfaces = new HashMap<>();
     public static Map<SkillAttributeBonus, Supplier<Attribute>> reskillableAttributeBonuses = new HashMap<>();
     public static Map<EntityType<?>, MobStats> mobAttributeModifiers = new HashMap<>();
@@ -184,6 +207,7 @@ public final class Config {
     public static ResourceKey<Biome> apostleSuperbossBiome;
     public static int worldgenType;
     public static double obliteratorDamageCap;
+    public static float resistanceAmount;
     
     // =========================================================
     // Sync
@@ -196,6 +220,7 @@ public final class Config {
         extraAlliesSet = new HashSet<>(EXTRA_ALLIES.get());
         foodTemperatureImmunitySet = new HashSet<>(FOOD_TEMPERATURE_IMMUNITY.get());
         foodThirstImmunitySet = new HashSet<>(FOOD_THIRST_IMMUNITY.get());
+        mobFreezeImmunitySet = new HashSet<>(MOB_FREEZE_IMMUNITY.get());
         extraPlantSurfaces = parsePlantSurfaces();
         reskillableAttributeBonuses = parseReskillableBonuses();
         mobAttributeModifiers = parseMobAttributeModifiers();
@@ -205,6 +230,7 @@ public final class Config {
         apostleSuperbossBiome = ResourceKey.create(Registries.BIOME, new ResourceLocation(APOSTLE_SUPPERBOSS_BIOME.get()));
         worldgenType = Mth.clamp(WORLDGEN_TYPE.get(), 0, 2);
         obliteratorDamageCap = OBLITERATOR_DAMAGE_CAP.get();
+        resistanceAmount = RESISTANCE_AMOUNT.get();
     }
     
     // =========================================================
