@@ -7,6 +7,7 @@ import com.livajq.arcanetweaks.compat.alexscaves.BiomeConfigLoader;
 import com.livajq.arcanetweaks.compat.goety.ritualtype.AdeptNetherCustomRitualType;
 import com.livajq.arcanetweaks.compat.goety.ritualtype.EndCustomRitualType;
 import com.livajq.arcanetweaks.compat.goety.ritualtype.ExpertNetherCustomRitualType;
+import com.livajq.arcanetweaks.handlers.PacketHandler;
 import com.livajq.arcanetweaks.handlers.ResourceReloadHandler;
 import com.livajq.arcanetweaks.init.ArcaneBiomeSources;
 import com.livajq.arcanetweaks.init.ArcaneEntities;
@@ -56,6 +57,7 @@ public class ArcaneTweaks {
             RitualType.addRitualType("expert_nether", new ExpertNetherCustomRitualType());
             BossBehaviorRegistry.init();
             BiomeConfigLoader.init();
+            PacketHandler.register();
         });
     }
     

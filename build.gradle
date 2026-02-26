@@ -78,6 +78,8 @@ dependencies {
     implementation fg.deobf("curse.maven:alexs-caves-${alexs_caves_version}")
     implementation fg.deobf("curse.maven:cataclysm-dimensions-${cataclysm_dimensions_version}")
     implementation fg.deobf("curse.maven:legendary-monsters-${legendary_monsters_version}")
+    implementation fg.deobf("curse.maven:tmrv-${tmrv_version}")
+    implementation fg.deobf("curse.maven:emi-${emi_version}")
 }
 
 mixin {

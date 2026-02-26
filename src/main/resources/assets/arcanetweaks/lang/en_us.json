@@ -1,3 +1,4 @@
 {
-  "entity.arcanetweaks.test_boss": "Bozo"
+  "entity.arcanetweaks.test_boss": "Bozo",
+  "deathScreen.respawnLives": "Respawn (%s lives remaining)"
 }

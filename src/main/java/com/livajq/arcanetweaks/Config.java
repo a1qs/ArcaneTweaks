@@ -1,5 +1,6 @@
 package com.livajq.arcanetweaks;
 
+import com.Polarice3.Goety.utils.MathHelper;
 import com.livajq.arcanetweaks.mobs.MobStats;
 import net.bandit.reskillable.common.commands.skills.SkillAttributeBonus;
 import net.minecraft.core.registries.Registries;
@@ -22,7 +23,6 @@ import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = ArcaneTweaks.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class Config {
-    
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
     
@@ -36,6 +36,9 @@ public final class Config {
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_THIRST_IMMUNITY;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> MOB_ATTRIBUTE_MODIFIERS;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> MOB_FREEZE_IMMUNITY;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> EMI_RECIPE_CATEGORY_BLACKLIST;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> EMI_RECIPE_WHITELIST;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> DEATH_MESSAGES;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_END_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_ADEPT_NETHER_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_EXPERT_NETHER_BIOMETAG;
@@ -50,9 +53,15 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<String> RESKILLABLE_MAGIC_BONUS;
     private static final ForgeConfigSpec.ConfigValue<Integer> WORLDGEN_TYPE;
     private static final ForgeConfigSpec.ConfigValue<Double> OBLITERATOR_DAMAGE_CAP;
-    private static final ForgeConfigSpec.ConfigValue<Float> RESISTANCE_AMOUNT;
+    private static final ForgeConfigSpec.ConfigValue<Double> RESISTANCE_AMOUNT;
+    private static final ForgeConfigSpec.ConfigValue<Integer> HARDCORE_LIVES_COUNT;
+    private static final ForgeConfigSpec.ConfigValue<Boolean> HARDCORE_ICON_VISIBLE;
+    private static final ForgeConfigSpec.ConfigValue<Integer> HARDCORE_ICON_SIZE;
+    private static final ForgeConfigSpec.ConfigValue<Double> HARDCORE_ICON_POSX;
+    private static final ForgeConfigSpec.ConfigValue<Double> HARDCORE_ICON_POSY;
     
-    static {
+    static
+    {
         BUILDER.push("Mobs");
         
         BUILDER.push("Dread Mobs");
@@ -122,7 +131,7 @@ public final class Config {
                         ),
                         o -> o instanceof String
                 );
-       
+        
         BUILDER.pop();
         
         BUILDER.push("Bosses");
@@ -177,14 +186,66 @@ public final class Config {
         
         BUILDER.pop();
         
+        BUILDER.push("EMI");
+        
+        EMI_RECIPE_CATEGORY_BLACKLIST = BUILDER
+                .comment("Blacklisted EMI recipe categories. Categories on this list will not show up in-game")
+                .defineListAllowEmpty(
+                        List.of("emiRecipeCategoryBlacklist"),
+                        List.of(
+                                "emi:anvil_repairing",
+                                "irons_spellbooks:arcane_anvil",
+                                "emi:grinding"
+                        ),
+                        o -> o instanceof String
+                );
+        
+        EMI_RECIPE_WHITELIST = BUILDER
+                .comment("EMI recipes that should be added even if their category is blacklisted",
+                        "NOTE: Substring based, not id based (or it would've been extremely painful)",
+                        "'iron_sword' will whitelist all iron sword recipes. repairing/minecraft/ will whitelist vanilla anvil repairing etc. etc.")
+                .defineListAllowEmpty(
+                        List.of("emiRecipeWhitelist"),
+                        List.of(
+                                "iron_sword",
+                                "grind",
+                                "minecraft:golden_apple"
+                        ),
+                        o -> o instanceof String
+                );
+        
+        BUILDER.pop();
+        
+        BUILDER.push("Hardcore");
+        
+        HARDCORE_LIVES_COUNT = BUILDER.comment("Amount of lives the player has in hardcore mode").define("hardcoreLivesCount", 5);
+        HARDCORE_ICON_VISIBLE = BUILDER.comment("Should the hardcore heart icon be displayed on the screen").define("hardcoreIconVisible", true);
+        HARDCORE_ICON_SIZE = BUILDER.comment("Hardcore icon size").define("hardcoreIconSize", 16);
+        HARDCORE_ICON_POSX = BUILDER.comment("Hardcore icon position X (0-100%)").define("hardcoreIconPosX", 2.0D);
+        HARDCORE_ICON_POSY = BUILDER.comment("Hardcore icon position Y (0-100%)").define("hardcoreIconPosY", 2.0D);
+        
+        BUILDER.pop();
+        
         BUILDER.push("Misc");
         
         WORLDGEN_TYPE = BUILDER
                 .comment("World generation type",
-                "0: Default (vanilla), 1: Arcane, 2: Biome Blend")
+                        "0: Default (vanilla), 1: Arcane, 2: Biome Blend")
                 .define("worldgenType", 1);
         
-        RESISTANCE_AMOUNT = BUILDER.comment("Damage reduced by the resistance effect per level (0 - 1)").define("resistanceAmount",0.1F);
+        RESISTANCE_AMOUNT = BUILDER.comment("Damage reduced by the resistance effect per level (0 - 1)").define("resistanceAmount", 0.1D);
+        
+        DEATH_MESSAGES = BUILDER
+                .comment("Extra messages that appear on the death screen")
+                .defineListAllowEmpty(
+                        List.of("deathMessages"),
+                        List.of(
+                                "Rip bozo",
+                                "Most unfortunate",
+                                "When monument?"
+                        ),
+                        o -> o instanceof String
+                );
         
         BUILDER.pop();
         SPEC = BUILDER.build();
@@ -198,32 +259,44 @@ public final class Config {
     public static Set<String> foodTemperatureImmunitySet;
     public static Set<String> foodThirstImmunitySet;
     public static Set<String> mobFreezeImmunitySet;
+    public static Set<String> emiRecipeCategoryBlacklistSet;
+    public static Set<String> emiRecipeWhitelistSet;
     public static Map<ResourceLocation, Set<ResourceLocation>> extraPlantSurfaces = new HashMap<>();
     public static Map<SkillAttributeBonus, Supplier<Attribute>> reskillableAttributeBonuses = new HashMap<>();
     public static Map<EntityType<?>, MobStats> mobAttributeModifiers = new HashMap<>();
+    public static List<String> deathMessages;
     public static TagKey<Biome> ritualEndBiome;
     public static TagKey<Biome> ritualAdeptNetherBiome;
     public static TagKey<Biome> ritualExpertNetherBiome;
     public static ResourceKey<Biome> apostleSuperbossBiome;
     public static int worldgenType;
     public static double obliteratorDamageCap;
-    public static float resistanceAmount;
+    public static double resistanceAmount;
+    public static int hardcoreLivesCount;
+    public static boolean hardcoreIconVisible;
+    public static int hardcoreIconSize;
+    public static double hardcoreIconPosX;
+    public static double hardcoreIconPosY;
     
     // =========================================================
     // Sync
     // =========================================================
     
     @SubscribeEvent
-    static void onLoad(final ModConfigEvent event) {
+    static void onLoad(final ModConfigEvent event)
+    {
         if (event.getConfig().getSpec() != SPEC) return;
         
         extraAlliesSet = new HashSet<>(EXTRA_ALLIES.get());
         foodTemperatureImmunitySet = new HashSet<>(FOOD_TEMPERATURE_IMMUNITY.get());
         foodThirstImmunitySet = new HashSet<>(FOOD_THIRST_IMMUNITY.get());
         mobFreezeImmunitySet = new HashSet<>(MOB_FREEZE_IMMUNITY.get());
+        emiRecipeCategoryBlacklistSet = new HashSet<>(EMI_RECIPE_CATEGORY_BLACKLIST.get());
+        emiRecipeWhitelistSet = new HashSet<>(EMI_RECIPE_WHITELIST.get());
         extraPlantSurfaces = parsePlantSurfaces();
         reskillableAttributeBonuses = parseReskillableBonuses();
         mobAttributeModifiers = parseMobAttributeModifiers();
+        deathMessages = new ArrayList<>(DEATH_MESSAGES.get());
         ritualEndBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_END_BIOMETAG.get()));
         ritualAdeptNetherBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_ADEPT_NETHER_BIOMETAG.get()));
         ritualExpertNetherBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_EXPERT_NETHER_BIOMETAG.get()));
@@ -231,16 +304,23 @@ public final class Config {
         worldgenType = Mth.clamp(WORLDGEN_TYPE.get(), 0, 2);
         obliteratorDamageCap = OBLITERATOR_DAMAGE_CAP.get();
         resistanceAmount = RESISTANCE_AMOUNT.get();
+        hardcoreLivesCount = Math.max(HARDCORE_LIVES_COUNT.get(), 1);
+        hardcoreIconVisible = HARDCORE_ICON_VISIBLE.get();
+        hardcoreIconSize = HARDCORE_ICON_SIZE.get();
+        hardcoreIconPosX = MathHelper.clamp(HARDCORE_ICON_POSX.get(), 0.0D, 99.0D);
+        hardcoreIconPosY  = MathHelper.clamp(HARDCORE_ICON_POSY.get(), 0.0D, 99.0D);
     }
     
     // =========================================================
     // Helpers
     // =========================================================
     
-    private static Map<ResourceLocation, Set<ResourceLocation>> parsePlantSurfaces() {
+    private static Map<ResourceLocation, Set<ResourceLocation>> parsePlantSurfaces()
+    {
         Map<ResourceLocation, Set<ResourceLocation>> map = new HashMap<>();
         
-        for (String line : EXTRA_PLANT_SURFACES.get()) {
+        for (String line : EXTRA_PLANT_SURFACES.get())
+        {
             String[] split = line.split("-");
             if (split.length != 2) continue;
             
@@ -256,25 +336,28 @@ public final class Config {
         return map;
     }
     
-    private static Map<SkillAttributeBonus, Supplier<Attribute>> parseReskillableBonuses() {
+    private static Map<SkillAttributeBonus, Supplier<Attribute>> parseReskillableBonuses()
+    {
         Map<SkillAttributeBonus, Supplier<Attribute>> map = new HashMap<>();
         
-        parseSkill(map, SkillAttributeBonus.ATTACK,    RESKILLABLE_ATTACK_BONUS.get());
+        parseSkill(map, SkillAttributeBonus.ATTACK, RESKILLABLE_ATTACK_BONUS.get());
         parseSkill(map, SkillAttributeBonus.GATHERING, RESKILLABLE_GATHERING_BONUS.get());
-        parseSkill(map, SkillAttributeBonus.MINING,    RESKILLABLE_MINING_BONUS.get());
-        parseSkill(map, SkillAttributeBonus.FARMING,   RESKILLABLE_FARMING_BONUS.get());
-        parseSkill(map, SkillAttributeBonus.BUILDING,  RESKILLABLE_BUILDING_BONUS.get());
-        parseSkill(map, SkillAttributeBonus.DEFENSE,   RESKILLABLE_DEFENSE_BONUS.get());
-        parseSkill(map, SkillAttributeBonus.AGILITY,   RESKILLABLE_AGILITY_BONUS.get());
-        parseSkill(map, SkillAttributeBonus.MAGIC,     RESKILLABLE_MAGIC_BONUS.get());
+        parseSkill(map, SkillAttributeBonus.MINING, RESKILLABLE_MINING_BONUS.get());
+        parseSkill(map, SkillAttributeBonus.FARMING, RESKILLABLE_FARMING_BONUS.get());
+        parseSkill(map, SkillAttributeBonus.BUILDING, RESKILLABLE_BUILDING_BONUS.get());
+        parseSkill(map, SkillAttributeBonus.DEFENSE, RESKILLABLE_DEFENSE_BONUS.get());
+        parseSkill(map, SkillAttributeBonus.AGILITY, RESKILLABLE_AGILITY_BONUS.get());
+        parseSkill(map, SkillAttributeBonus.MAGIC, RESKILLABLE_MAGIC_BONUS.get());
         
         return map;
     }
     
-    private static void parseSkill(Map<SkillAttributeBonus, Supplier<Attribute>> map, SkillAttributeBonus bonus, String id) {
+    private static void parseSkill(Map<SkillAttributeBonus, Supplier<Attribute>> map, SkillAttributeBonus bonus, String id)
+    {
         if (id.equalsIgnoreCase("DEFAULT")) return;
         
-        if (id.equalsIgnoreCase("NONE")) {
+        if (id.equalsIgnoreCase("NONE"))
+        {
             map.put(bonus, () -> null);
             return;
         }
@@ -282,7 +365,8 @@ public final class Config {
         ResourceLocation rl = new ResourceLocation(id);
         Attribute attr = ForgeRegistries.ATTRIBUTES.getValue(rl);
         
-        if (attr == null) {
+        if (attr == null)
+        {
             ArcaneTweaks.LOGGER.warn("[ArcaneTweaks] Invalid attribute ID in config: " + id + " for skill " + bonus.name());
             map.put(bonus, () -> null);
             return;
@@ -291,10 +375,12 @@ public final class Config {
         map.put(bonus, () -> attr);
     }
     
-    public static Map<EntityType<?>, MobStats> parseMobAttributeModifiers() {
+    private static Map<EntityType<?>, MobStats> parseMobAttributeModifiers()
+    {
         Map<EntityType<?>, MobStats> map = new HashMap<>();
         
-        for (String line : MOB_ATTRIBUTE_MODIFIERS.get()) {
+        for (String line : MOB_ATTRIBUTE_MODIFIERS.get())
+        {
             if (!line.contains("-")) continue;
             
             String[] split = line.split("-", 2);
@@ -303,21 +389,24 @@ public final class Config {
             
             ResourceLocation id = new ResourceLocation(idPart);
             EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(id);
-            if (type == null) {
+            if (type == null)
+            {
                 ArcaneTweaks.LOGGER.warn("[ArcaneTweaks] Unknown entity type in config: " + id);
                 continue;
             }
             
             double attack = 1, armor = 1, health = 1, speed = 1, follow = 1, tick = 1;
             
-            for (String token : statsPart.split(" ")) {
+            for (String token : statsPart.split(" "))
+            {
                 if (!token.contains("=")) continue;
                 
                 String[] kv = token.split("=", 2);
                 String key = kv[0];
                 double val = Double.parseDouble(kv[1]);
                 
-                switch (key) {
+                switch (key)
+                {
                     case "attack" -> attack = val;
                     case "armor" -> armor = val;
                     case "health" -> health = val;
