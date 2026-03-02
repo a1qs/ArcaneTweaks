@@ -21,33 +21,13 @@ import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = ArcaneTweaks.MODID)
 public class BossBehaviorHandler {
-    
-    @SuppressWarnings("unchecked")
-    private static <T extends LivingEntity> void dispatch(BossBehavior<?> behavior, LivingEntity boss, Callback<T> cb) {
-        cb.call((BossBehavior<T>) behavior, (T) boss);
-    }
-    
-    @SuppressWarnings("unchecked")
-    private static <T extends LivingEntity, R> R dispatchReturn(BossBehavior<?> behavior, LivingEntity boss, ReturnCallback<T, R> cb) {
-        return cb.call((BossBehavior<T>) behavior, (T) boss);
-    }
-    
-    @FunctionalInterface
-    private interface Callback<T extends LivingEntity> {
-        void call(BossBehavior<T> behavior, T boss);
-    }
-    
-    @FunctionalInterface
-    private interface ReturnCallback<T extends LivingEntity, R> {
-        R call(BossBehavior<T> behavior, T boss);
-    }
 
     @SubscribeEvent
     public static void onBossTick(LivingEvent.LivingTickEvent event) {
         LivingEntity boss = event.getEntity();
         if (boss.level().isClientSide()) return;
         
-        BossBehavior<?> behavior = BossBehaviorRegistry.get(boss);
+        BossBehavior<LivingEntity> behavior = BossBehaviorRegistry.get(boss);
         if (behavior == null) return;
         
         double hpRatio = boss.getHealth() / boss.getMaxHealth();
@@ -70,25 +50,19 @@ public class BossBehaviorHandler {
             tag.putInt("Arcane_BossPhase", newPhase);
             tag.putInt("Arcane_BossVisitedMask", visitedMask);
             
-            if (!boss.isDeadOrDying()) {
-                int finalNewPhase = newPhase;
-                dispatch(behavior, boss,
-                        (b, e) -> b.onPhaseChange(e, finalNewPhase, currentPhase, firstTime));
-            }
+            if (!boss.isDeadOrDying()) behavior.onPhaseChange(boss, newPhase, currentPhase, firstTime);
         }
         
-        dispatch(behavior, boss,
-                (b, e) -> b.onPhaseTick(e, currentPhase));
+        behavior.onPhaseTick(boss,  currentPhase);
     }
     
     @SubscribeEvent
     public static void onBossHurt(LivingHurtEvent event) {
         LivingEntity boss = event.getEntity();
-        BossBehavior<?> behavior = BossBehaviorRegistry.get(boss);
+        BossBehavior<LivingEntity> behavior = BossBehaviorRegistry.get(boss);
         if (behavior == null) return;
         
-        HurtResult result = dispatchReturn(behavior, boss,
-                (b, e) -> b.onHurt(e, event.getSource(), event.getAmount()));
+        HurtResult result = behavior.onHurt(boss, event.getSource(), event.getAmount());
         
         if (result.cancel) {
             event.setCanceled(true);
@@ -102,11 +76,10 @@ public class BossBehaviorHandler {
         if (!(event.getEntity() instanceof LivingEntity boss)) return;
         if (boss.level().isClientSide()) return;
         
-        BossBehavior<?> behavior = BossBehaviorRegistry.get(boss);
+        BossBehavior<LivingEntity> behavior = BossBehaviorRegistry.get(boss);
         if (behavior == null) return;
         
-        dispatch(behavior, boss,
-                (b, e) -> b.reconcileMinions(e));
+        behavior.reconcileMinions(boss);
     }
     
     @SubscribeEvent
@@ -114,11 +87,10 @@ public class BossBehaviorHandler {
         LivingEntity boss = event.getEntity();
         if (boss.level().isClientSide()) return;
         
-        BossBehavior<?> behavior = BossBehaviorRegistry.get(boss);
+        BossBehavior<LivingEntity> behavior = BossBehaviorRegistry.get(boss);
         if (behavior == null) return;
         
-        dispatch(behavior, boss,
-                (b, e) -> b.onBossDied(e));
+        behavior.onBossDied(boss);
     }
     
     @SubscribeEvent
@@ -129,14 +101,13 @@ public class BossBehaviorHandler {
             LivingEntity boss = cap.getBoss();
             if (boss == null) return;
             
-            BossBehavior<?> behavior = BossBehaviorRegistry.get(boss);
+            BossBehavior<LivingEntity> behavior = BossBehaviorRegistry.get(boss);
             if (behavior == null) return;
             
             Set<UUID> set = BossBehavior.MINIONS.get(boss);
             if (set != null) set.remove(mob.getUUID());
             
-            dispatch(behavior, boss,
-                    (b, e) -> b.onMinionDied(e, mob));
+            behavior.onMinionDied(boss, mob);
         });
     }
     
@@ -148,15 +119,12 @@ public class BossBehaviorHandler {
             LivingEntity boss = cap.getBoss();
             if (boss == null) return;
             
-            BossBehavior<?> behavior = BossBehaviorRegistry.get(boss);
+            BossBehavior<LivingEntity> behavior = BossBehaviorRegistry.get(boss);
             if (behavior == null) return;
             
             Set<UUID> set = BossBehavior.MINIONS.computeIfAbsent(boss, b -> new HashSet<>());
             
-            if (set.add(mob.getUUID())) {
-                dispatch(behavior, boss,
-                        (b, e) -> b.onMinionAdded(e, mob));
-            }
+            if (set.add(mob.getUUID())) behavior.onMinionDied(boss, mob);
         });
     }
 }

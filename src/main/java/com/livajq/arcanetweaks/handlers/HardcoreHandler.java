@@ -96,7 +96,7 @@ public class HardcoreHandler {
 
         int u, v;
         switch (lives) {
-            case 5 -> { u = 34; v = 9; }
+            case 5 -> { u = 34; v = 9; }  //TODO correct to % ratio
             case 4 -> { u = 16; v = 0; }
             case 3 -> { u = 34; v = 0; }
             case 2 -> { u = 52; v = 0; }

@@ -35,6 +35,7 @@ public class LivingEntityMixin implements TickSpeedAccessor {
     )
     private float redirectResCalc(float a, float b, DamageSource src, float pDamageAmount) {
         LivingEntity self = (LivingEntity)(Object)this;
+        if (!self.hasEffect(MobEffects.DAMAGE_RESISTANCE)) return pDamageAmount;
         
         final double resPerLvl = Config.resistanceAmount; //% reduction per resistance level
         pDamageAmount -= (float) (pDamageAmount * (self.getEffect(MobEffects.DAMAGE_RESISTANCE).getAmplifier() + 1) * resPerLvl);

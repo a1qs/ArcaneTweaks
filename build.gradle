@@ -80,6 +80,9 @@ dependencies {
     implementation fg.deobf("curse.maven:legendary-monsters-${legendary_monsters_version}")
     implementation fg.deobf("curse.maven:tmrv-${tmrv_version}")
     implementation fg.deobf("curse.maven:emi-${emi_version}")
+    implementation fg.deobf("curse.maven:to-tweaks-irons-spells-${to_tweaks_version}")
+    implementation fg.deobf("curse.maven:apothic-attributes-${apothic_attributes_version}")
+    implementation fg.deobf("curse.maven:placebo-${placebo_version}")
 }
 
 mixin {

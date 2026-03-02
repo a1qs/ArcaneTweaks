@@ -22,5 +22,6 @@ public class BossBehaviorRegistry {
     
     public static void init() {
         register(ModEntities.THE_OBLITERATOR.get(), new ObliteratorBehavior());
+        register(com.github.L_Ender.cataclysm.init.ModEntities.IGNIS.get(), new IgnisBehavior());
     }
 }

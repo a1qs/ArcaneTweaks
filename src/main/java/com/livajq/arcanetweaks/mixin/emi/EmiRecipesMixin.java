@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-
 @OnlyIn(Dist.CLIENT)
 @Mixin(EmiRecipes.class)
 public class EmiRecipesMixin {
@@ -30,8 +29,6 @@ public class EmiRecipesMixin {
         ResourceLocation catId = cat.getId();
         if (catId == null) return;
         
-        if (Config.emiRecipeCategoryBlacklistSet.contains(catId.toString())) {
-            ci.cancel();
-        }
+        if (Config.emiRecipeCategoryBlacklistSet.contains(catId.toString())) ci.cancel();
     }
 }
