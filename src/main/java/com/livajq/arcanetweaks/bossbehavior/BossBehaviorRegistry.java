@@ -23,5 +23,7 @@ public class BossBehaviorRegistry {
     public static void init() {
         register(ModEntities.THE_OBLITERATOR.get(), new ObliteratorBehavior());
         register(com.github.L_Ender.cataclysm.init.ModEntities.IGNIS.get(), new IgnisBehavior());
+        register(com.github.L_Ender.cataclysm.init.ModEntities.SCYLLA.get(), new ScyllaBehavior());
+        register(com.github.L_Ender.cataclysm.init.ModEntities.MALEDICTUS.get(), new MaledictusBehavior());
     }
 }
