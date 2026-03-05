@@ -54,14 +54,14 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<Integer> WORLDGEN_TYPE;
     private static final ForgeConfigSpec.ConfigValue<Double> OBLITERATOR_DAMAGE_CAP;
     private static final ForgeConfigSpec.ConfigValue<Double> RESISTANCE_AMOUNT;
+    private static final ForgeConfigSpec.ConfigValue<Double> FIRE_RESISTANCE_AMOUNT;
     private static final ForgeConfigSpec.ConfigValue<Integer> HARDCORE_LIVES_COUNT;
     private static final ForgeConfigSpec.ConfigValue<Boolean> HARDCORE_ICON_VISIBLE;
     private static final ForgeConfigSpec.ConfigValue<Integer> HARDCORE_ICON_SIZE;
     private static final ForgeConfigSpec.ConfigValue<Double> HARDCORE_ICON_POSX;
     private static final ForgeConfigSpec.ConfigValue<Double> HARDCORE_ICON_POSY;
     
-    static
-    {
+    static {
         BUILDER.push("Mobs");
         
         BUILDER.push("Dread Mobs");
@@ -234,6 +234,7 @@ public final class Config {
                 .define("worldgenType", 1);
         
         RESISTANCE_AMOUNT = BUILDER.comment("Damage reduced by the resistance effect per level (0 - 1)").define("resistanceAmount", 0.1D);
+        FIRE_RESISTANCE_AMOUNT = BUILDER.comment("Fire damage reduced by the fire resistance effect per level (0 - 1)").define("fireResistanceAmount", 0.1D);
         
         DEATH_MESSAGES = BUILDER
                 .comment("Extra messages that appear on the death screen")
@@ -272,6 +273,7 @@ public final class Config {
     public static int worldgenType;
     public static double obliteratorDamageCap;
     public static double resistanceAmount;
+    public static double fireResistanceAmount;
     public static int hardcoreLivesCount;
     public static boolean hardcoreIconVisible;
     public static int hardcoreIconSize;
@@ -283,8 +285,7 @@ public final class Config {
     // =========================================================
     
     @SubscribeEvent
-    static void onLoad(final ModConfigEvent event)
-    {
+    static void onLoad(final ModConfigEvent event) {
         if (event.getConfig().getSpec() != SPEC) return;
         
         extraAlliesSet = new HashSet<>(EXTRA_ALLIES.get());
@@ -304,6 +305,7 @@ public final class Config {
         worldgenType = Mth.clamp(WORLDGEN_TYPE.get(), 0, 2);
         obliteratorDamageCap = OBLITERATOR_DAMAGE_CAP.get();
         resistanceAmount = RESISTANCE_AMOUNT.get();
+        fireResistanceAmount = FIRE_RESISTANCE_AMOUNT.get();
         hardcoreLivesCount = Math.max(HARDCORE_LIVES_COUNT.get(), 1);
         hardcoreIconVisible = HARDCORE_ICON_VISIBLE.get();
         hardcoreIconSize = HARDCORE_ICON_SIZE.get();
@@ -315,12 +317,10 @@ public final class Config {
     // Helpers
     // =========================================================
     
-    private static Map<ResourceLocation, Set<ResourceLocation>> parsePlantSurfaces()
-    {
+    private static Map<ResourceLocation, Set<ResourceLocation>> parsePlantSurfaces() {
         Map<ResourceLocation, Set<ResourceLocation>> map = new HashMap<>();
         
-        for (String line : EXTRA_PLANT_SURFACES.get())
-        {
+        for (String line : EXTRA_PLANT_SURFACES.get()) {
             String[] split = line.split("-");
             if (split.length != 2) continue;
             
@@ -336,8 +336,7 @@ public final class Config {
         return map;
     }
     
-    private static Map<SkillAttributeBonus, Supplier<Attribute>> parseReskillableBonuses()
-    {
+    private static Map<SkillAttributeBonus, Supplier<Attribute>> parseReskillableBonuses() {
         Map<SkillAttributeBonus, Supplier<Attribute>> map = new HashMap<>();
         
         parseSkill(map, SkillAttributeBonus.ATTACK, RESKILLABLE_ATTACK_BONUS.get());
@@ -352,12 +351,10 @@ public final class Config {
         return map;
     }
     
-    private static void parseSkill(Map<SkillAttributeBonus, Supplier<Attribute>> map, SkillAttributeBonus bonus, String id)
-    {
+    private static void parseSkill(Map<SkillAttributeBonus, Supplier<Attribute>> map, SkillAttributeBonus bonus, String id) {
         if (id.equalsIgnoreCase("DEFAULT")) return;
         
-        if (id.equalsIgnoreCase("NONE"))
-        {
+        if (id.equalsIgnoreCase("NONE")) {
             map.put(bonus, () -> null);
             return;
         }
@@ -365,8 +362,7 @@ public final class Config {
         ResourceLocation rl = new ResourceLocation(id);
         Attribute attr = ForgeRegistries.ATTRIBUTES.getValue(rl);
         
-        if (attr == null)
-        {
+        if (attr == null) {
             ArcaneTweaks.LOGGER.warn("[ArcaneTweaks] Invalid attribute ID in config: " + id + " for skill " + bonus.name());
             map.put(bonus, () -> null);
             return;
@@ -375,12 +371,10 @@ public final class Config {
         map.put(bonus, () -> attr);
     }
     
-    private static Map<EntityType<?>, MobStats> parseMobAttributeModifiers()
-    {
+    private static Map<EntityType<?>, MobStats> parseMobAttributeModifiers() {
         Map<EntityType<?>, MobStats> map = new HashMap<>();
         
-        for (String line : MOB_ATTRIBUTE_MODIFIERS.get())
-        {
+        for (String line : MOB_ATTRIBUTE_MODIFIERS.get()) {
             if (!line.contains("-")) continue;
             
             String[] split = line.split("-", 2);
@@ -389,24 +383,21 @@ public final class Config {
             
             ResourceLocation id = new ResourceLocation(idPart);
             EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(id);
-            if (type == null)
-            {
+            if (type == null) {
                 ArcaneTweaks.LOGGER.warn("[ArcaneTweaks] Unknown entity type in config: " + id);
                 continue;
             }
             
             double attack = 1, armor = 1, health = 1, speed = 1, follow = 1, tick = 1;
             
-            for (String token : statsPart.split(" "))
-            {
+            for (String token : statsPart.split(" ")) {
                 if (!token.contains("=")) continue;
                 
                 String[] kv = token.split("=", 2);
                 String key = kv[0];
                 double val = Double.parseDouble(kv[1]);
                 
-                switch (key)
-                {
+                switch (key) {
                     case "attack" -> attack = val;
                     case "armor" -> armor = val;
                     case "health" -> health = val;

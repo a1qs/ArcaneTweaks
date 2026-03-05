@@ -22,6 +22,7 @@
     "betterend.TenaneaFeatureMixin",
     "betterend.UmbrellaTreeFeatureMixin",
     "goety.ApostleMixin",
+    "goety.ItemEventsMixin",
     "reskillable.SkillAttributeBonusMixin",
     "ironsspellbooks.FurledMapItemMixin",
     "alexscaves.ACBiomeRegistryMixin",
