@@ -60,6 +60,7 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<Integer> HARDCORE_ICON_SIZE;
     private static final ForgeConfigSpec.ConfigValue<Double> HARDCORE_ICON_POSX;
     private static final ForgeConfigSpec.ConfigValue<Double> HARDCORE_ICON_POSY;
+    private static final ForgeConfigSpec.ConfigValue<Double> SEA_SERPENT_REACH;
     
     static {
         BUILDER.push("Mobs");
@@ -88,6 +89,7 @@ public final class Config {
                         ),
                         o -> o instanceof String
                 );
+        
         BUILDER.pop();
         
         BUILDER.push("Mob attribute modifiers");
@@ -107,6 +109,8 @@ public final class Config {
                 );
         
         BUILDER.pop();
+        
+        SEA_SERPENT_REACH = BUILDER.comment("Attack reach bonus for sea serpents. 0.5 = 50% extra reach etc.").define("seaSerpentReach", 1.0D);
         
         BUILDER.pop();
         BUILDER.push("Rituals");
@@ -279,6 +283,7 @@ public final class Config {
     public static int hardcoreIconSize;
     public static double hardcoreIconPosX;
     public static double hardcoreIconPosY;
+    public static double seaSerpentReach;
     
     // =========================================================
     // Sync
@@ -311,6 +316,7 @@ public final class Config {
         hardcoreIconSize = HARDCORE_ICON_SIZE.get();
         hardcoreIconPosX = MathHelper.clamp(HARDCORE_ICON_POSX.get(), 0.0D, 99.0D);
         hardcoreIconPosY  = MathHelper.clamp(HARDCORE_ICON_POSY.get(), 0.0D, 99.0D);
+        seaSerpentReach = SEA_SERPENT_REACH.get();
     }
     
     // =========================================================
