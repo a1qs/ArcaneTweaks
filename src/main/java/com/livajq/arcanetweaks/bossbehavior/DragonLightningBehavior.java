@@ -1,0 +1,19 @@
+package com.livajq.arcanetweaks.bossbehavior;
+
+import com.github.alexthe666.iceandfire.entity.EntityLightningDragon;
+import com.livajq.arcanetweaks.Config;
+
+import java.awt.*;
+
+public class DragonLightningBehavior extends DragonBehavior<EntityLightningDragon> {
+    private static final Color LIGHTNING_EXPLOSION_COLOR = new Color(Config.dragonNukeColorLightning);
+    
+    public DragonLightningBehavior() {
+        super(2);
+    }
+    
+    @Override
+    public Color getExplosionColor() {
+        return LIGHTNING_EXPLOSION_COLOR;
+    }
+}

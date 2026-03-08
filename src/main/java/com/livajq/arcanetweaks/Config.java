@@ -39,6 +39,7 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> EMI_RECIPE_CATEGORY_BLACKLIST;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> EMI_RECIPE_WHITELIST;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> DEATH_MESSAGES;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> DRAGON_NUKE_IMMUNE;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_END_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_ADEPT_NETHER_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_EXPERT_NETHER_BIOMETAG;
@@ -61,6 +62,9 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<Double> HARDCORE_ICON_POSX;
     private static final ForgeConfigSpec.ConfigValue<Double> HARDCORE_ICON_POSY;
     private static final ForgeConfigSpec.ConfigValue<Double> SEA_SERPENT_REACH;
+    private static final ForgeConfigSpec.ConfigValue<Integer> DRAGON_NUKE_COLOR_FIRE;
+    private static final ForgeConfigSpec.ConfigValue<Integer> DRAGON_NUKE_COLOR_ICE;
+    private static final ForgeConfigSpec.ConfigValue<Integer> DRAGON_NUKE_COLOR_LIGHTNING;
     
     static {
         BUILDER.push("Mobs");
@@ -104,6 +108,26 @@ public final class Config {
                         List.of(
                                 "iceandfire:dread_beast - attack=1.3 armor=0.5 health=1.2 speed=2.0 follow=1.35",
                                 "minecraft:wolf - health=2.0"
+                        ),
+                        o -> o instanceof String
+                );
+        
+        BUILDER.pop();
+        
+        BUILDER.push("Dragons");
+        
+        DRAGON_NUKE_COLOR_FIRE = BUILDER.comment("Fire dragon nuke color").defineInRange("dragonNukeColorFire", 0xD30E0E, 0x000000, 0xFFFFFF);
+        DRAGON_NUKE_COLOR_ICE = BUILDER.comment("Ice dragon nuke color").defineInRange("dragonNukeColorIce", 0x0AB8EA, 0x000000, 0xFFFFFF);
+        DRAGON_NUKE_COLOR_LIGHTNING = BUILDER.comment("Lightning dragon nuke color").defineInRange("dragonNukeColorLightning", 0xFF00EA, 0x000000, 0xFFFFFF);
+        
+        DRAGON_NUKE_IMMUNE = BUILDER
+                .comment("Mobs immune to dragon nuke"
+                )
+                .defineListAllowEmpty(
+                        List.of("dragonNukeImmune"),
+                        List.of(
+                                "minecraft:villager",
+                                "minecraft:wolf"
                         ),
                         o -> o instanceof String
                 );
@@ -266,6 +290,7 @@ public final class Config {
     public static Set<String> mobFreezeImmunitySet;
     public static Set<String> emiRecipeCategoryBlacklistSet;
     public static Set<String> emiRecipeWhitelistSet;
+    public static Set<String> dragonNukeImmuneSet;
     public static Map<ResourceLocation, Set<ResourceLocation>> extraPlantSurfaces = new HashMap<>();
     public static Map<SkillAttributeBonus, Supplier<Attribute>> reskillableAttributeBonuses = new HashMap<>();
     public static Map<EntityType<?>, MobStats> mobAttributeModifiers = new HashMap<>();
@@ -284,6 +309,9 @@ public final class Config {
     public static double hardcoreIconPosX;
     public static double hardcoreIconPosY;
     public static double seaSerpentReach;
+    public static int dragonNukeColorFire;
+    public static int dragonNukeColorIce;
+    public static int dragonNukeColorLightning;
     
     // =========================================================
     // Sync
@@ -299,6 +327,7 @@ public final class Config {
         mobFreezeImmunitySet = new HashSet<>(MOB_FREEZE_IMMUNITY.get());
         emiRecipeCategoryBlacklistSet = new HashSet<>(EMI_RECIPE_CATEGORY_BLACKLIST.get());
         emiRecipeWhitelistSet = new HashSet<>(EMI_RECIPE_WHITELIST.get());
+        dragonNukeImmuneSet = new HashSet<>(DRAGON_NUKE_IMMUNE.get());
         extraPlantSurfaces = parsePlantSurfaces();
         reskillableAttributeBonuses = parseReskillableBonuses();
         mobAttributeModifiers = parseMobAttributeModifiers();
@@ -317,6 +346,9 @@ public final class Config {
         hardcoreIconPosX = MathHelper.clamp(HARDCORE_ICON_POSX.get(), 0.0D, 99.0D);
         hardcoreIconPosY  = MathHelper.clamp(HARDCORE_ICON_POSY.get(), 0.0D, 99.0D);
         seaSerpentReach = SEA_SERPENT_REACH.get();
+        dragonNukeColorFire = DRAGON_NUKE_COLOR_FIRE.get();
+        dragonNukeColorIce = DRAGON_NUKE_COLOR_ICE.get();
+        dragonNukeColorLightning = DRAGON_NUKE_COLOR_LIGHTNING.get();
     }
     
     // =========================================================

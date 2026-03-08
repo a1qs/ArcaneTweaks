@@ -1,5 +1,6 @@
 package com.livajq.arcanetweaks.bossbehavior;
 
+import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 import net.miauczel.legendary_monsters.entity.ModEntities;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,5 +26,8 @@ public class BossBehaviorRegistry {
         register(com.github.L_Ender.cataclysm.init.ModEntities.IGNIS.get(), new IgnisBehavior());
         register(com.github.L_Ender.cataclysm.init.ModEntities.SCYLLA.get(), new ScyllaBehavior());
         register(com.github.L_Ender.cataclysm.init.ModEntities.MALEDICTUS.get(), new MaledictusBehavior());
+        register(IafEntityRegistry.FIRE_DRAGON.get(), new DragonFireBehavior());
+        register(IafEntityRegistry.ICE_DRAGON.get(), new DragonIceBehavior());
+        register(IafEntityRegistry.LIGHTNING_DRAGON.get(), new DragonLightningBehavior());
     }
 }

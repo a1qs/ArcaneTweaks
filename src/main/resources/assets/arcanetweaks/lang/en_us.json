@@ -1,4 +1,10 @@
 {
   "entity.arcanetweaks.test_boss": "Bozo",
-  "deathScreen.respawnLives": "Respawn (%s lives remaining)"
+  "deathScreen.respawnLives": "Respawn (%s lives remaining)",
+  "death.attack.vaporized": [
+    "%1$s was reduced to atoms.",
+    "%1$s was vaporized.",
+    "%1$s was obliterated.",
+    "%1$s vanished in a flash of draconic fury."
+  ]
 }

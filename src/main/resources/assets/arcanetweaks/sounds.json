@@ -1,0 +1,12 @@
+{
+  "dragon_nuke_charge": {
+    "sounds": [
+      { "name": "arcanetweaks:dragon_nuke_charge" }
+    ]
+  },
+  "dragon_nuke_explode": {
+    "sounds": [
+      { "name": "arcanetweaks:dragon_nuke_explode" }
+    ]
+  }
+}

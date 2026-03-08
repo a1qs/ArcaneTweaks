@@ -26,6 +26,7 @@
     "reskillable.SkillAttributeBonusMixin",
     "ironsspellbooks.FurledMapItemMixin",
     "alexscaves.ACBiomeRegistryMixin",
+    "alexscaves.NuclearExplosionEntityMixin",
     "legendarymonsters.TheObliteratorEntityMixin",
     "iceandfire.FrozenDataMixin",
     "iceandfire.EntitySeaSerpentMixin",
@@ -33,6 +34,7 @@
   ],
   "client": [
     "emi.EmiRecipesMixin",
-    "vanilla.DeathScreenMixin"
+    "vanilla.DeathScreenMixin",
+    "iceandfire.MushroomCloudParticleMixin"
   ]
 }
