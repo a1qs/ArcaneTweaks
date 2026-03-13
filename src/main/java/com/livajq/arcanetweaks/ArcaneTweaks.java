@@ -12,6 +12,7 @@ import com.livajq.arcanetweaks.handlers.ResourceReloadHandler;
 import com.livajq.arcanetweaks.init.ArcaneBiomeSources;
 import com.livajq.arcanetweaks.init.ArcaneEntities;
 import com.livajq.arcanetweaks.init.ArcaneSounds;
+import com.livajq.arcanetweaks.util.ReskillableGenerator;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -58,6 +59,7 @@ public class ArcaneTweaks {
             BossBehaviorRegistry.init();
             BiomeConfigLoader.init();
             PacketHandler.register();
+            //ReskillableGenerator.generateReskillableEntries();
         });
     }
     

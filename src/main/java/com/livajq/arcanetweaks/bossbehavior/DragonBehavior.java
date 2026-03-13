@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -83,7 +84,7 @@ public abstract class DragonBehavior<T extends EntityDragonBase> extends BossBeh
                 dragon.getX(),
                 dragon.getY(),
                 dragon.getZ(),
-                ArcaneSounds.DRAGON_NUKE_CHARGE.get(),
+                getExplosionChargeSound(),
                 SoundSource.HOSTILE,
                 6.0f,
                 1.0f
@@ -219,4 +220,5 @@ public abstract class DragonBehavior<T extends EntityDragonBase> extends BossBeh
     }
     
     public abstract Color getExplosionColor();
+    public abstract SoundEvent getExplosionChargeSound();
 }

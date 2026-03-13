@@ -2,6 +2,8 @@ package com.livajq.arcanetweaks.bossbehavior;
 
 import com.github.alexthe666.iceandfire.entity.EntityIceDragon;
 import com.livajq.arcanetweaks.Config;
+import com.livajq.arcanetweaks.init.ArcaneSounds;
+import net.minecraft.sounds.SoundEvent;
 
 import java.awt.*;
 
@@ -15,5 +17,10 @@ public class DragonIceBehavior extends DragonBehavior<EntityIceDragon> {
     @Override
     public Color getExplosionColor() {
         return ICE_EXPLOSION_COLOR;
+    }
+    
+    @Override
+    public SoundEvent getExplosionChargeSound() {
+        return ArcaneSounds.DRAGON_NUKE_CHARGE_ICE.get();
     }
 }

@@ -1,7 +1,17 @@
 {
-  "dragon_nuke_charge": {
+  "dragon_nuke_charge_fire": {
     "sounds": [
-      { "name": "arcanetweaks:dragon_nuke_charge" }
+      { "name": "arcanetweaks:dragon_nuke_charge_fire" }
+    ]
+  },
+  "dragon_nuke_charge_ice": {
+    "sounds": [
+      { "name": "arcanetweaks:dragon_nuke_charge_ice" }
+    ]
+  },
+  "dragon_nuke_charge_lightning": {
+    "sounds": [
+      { "name": "arcanetweaks:dragon_nuke_charge_lightning" }
     ]
   },
   "dragon_nuke_explode": {
