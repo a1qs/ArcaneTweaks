@@ -83,6 +83,8 @@ dependencies {
     implementation fg.deobf("curse.maven:to-tweaks-irons-spells-${to_tweaks_version}")
     implementation fg.deobf("curse.maven:apothic-attributes-${apothic_attributes_version}")
     implementation fg.deobf("curse.maven:placebo-${placebo_version}")
+    implementation fg.deobf("curse.maven:lost-worlds-lc-${lost_worlds_lc_version}")
+    implementation fg.deobf("curse.maven:the-lost-cities-${lost_cities_version}")
 }
 
 mixin {
