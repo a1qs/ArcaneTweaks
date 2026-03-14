@@ -13,6 +13,7 @@ import com.livajq.arcanetweaks.init.ArcaneBiomeSources;
 import com.livajq.arcanetweaks.init.ArcaneEntities;
 import com.livajq.arcanetweaks.init.ArcaneSounds;
 import com.livajq.arcanetweaks.util.ReskillableGenerator;
+import com.livajq.arcanetweaks.world.level.storage.loot.predicates.ModLootConditions;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -69,6 +70,7 @@ public class ArcaneTweaks {
     
     private void onRegister(RegisterEvent event) {
         event.register(Registries.BIOME_SOURCE, ArcaneBiomeSources::register);
+        event.register(Registries.LOOT_CONDITION_TYPE, helper -> {helper.register(new ResourceLocation(ArcaneTweaks.MODID, "game_stage_per_player"), ModLootConditions.GAME_STAGE_PER_PLAYER);});
     }
     
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

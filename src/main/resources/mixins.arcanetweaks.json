@@ -30,7 +30,8 @@
     "legendarymonsters.TheObliteratorEntityMixin",
     "iceandfire.FrozenDataMixin",
     "iceandfire.EntitySeaSerpentMixin",
-    "iceandfire.FlyingAITargetMixin"
+    "iceandfire.FlyingAITargetMixin",
+    "lendercataclysm.Ignis_EntityMixin"
   ],
   "client": [
     "emi.EmiRecipesMixin",

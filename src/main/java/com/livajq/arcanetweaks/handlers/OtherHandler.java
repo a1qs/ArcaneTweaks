@@ -1,6 +1,7 @@
 package com.livajq.arcanetweaks.handlers;
 
 import com.eeeab.eeeabsmobs.sever.init.ItemInit;
+import com.github.L_Ender.cataclysm.world.data.CMWorldData;
 import com.livajq.arcanetweaks.ArcaneTweaks;
 import com.livajq.arcanetweaks.Config;
 import com.livajq.arcanetweaks.mixin.vanilla.ChunkGeneratorAccessor;
@@ -18,6 +19,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -27,11 +29,13 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.joml.Vector3f;
 
 import java.util.function.Function;
@@ -194,5 +198,19 @@ public class OtherHandler {
                 baseZ + rz,
                 0, 0, 0
         );
+    }
+    
+    //set IgnisBossDefeatedOnce flag by killing drag instead
+    @SubscribeEvent
+    public static void onLivingDeath(LivingDeathEvent event) {
+        LivingEntity entity = event.getEntity();
+        ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(entity.getType());
+        if (id != null && id.toString().equals("block_factorys_bosses:infernal_dragon")) {
+            CMWorldData worldData = CMWorldData.get(entity.level(), Level.NETHER);
+            if (worldData != null) {
+                boolean prev = worldData.isIgnisDefeatedOnce();
+                if (!prev) worldData.setIgnisDefeatedOnce(true);
+            }
+        }
     }
 }
