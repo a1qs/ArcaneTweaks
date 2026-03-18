@@ -11,6 +11,8 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 public class GameStagePerPlayerCondition implements LootItemCondition {
     
@@ -22,6 +24,7 @@ public class GameStagePerPlayerCondition implements LootItemCondition {
     
     @Override
     public boolean test(LootContext ctx) {
+        if (!FMLLoader.isProduction() || !ModList.get().isLoaded("majruszsdifficulty")) return false;
         
         Entity breaker = ctx.getParamOrNull(LootContextParams.THIS_ENTITY);
         if (breaker instanceof Player player) {

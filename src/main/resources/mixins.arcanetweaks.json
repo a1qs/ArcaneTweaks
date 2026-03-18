@@ -28,10 +28,12 @@
     "alexscaves.ACBiomeRegistryMixin",
     "alexscaves.NuclearExplosionEntityMixin",
     "legendarymonsters.TheObliteratorEntityMixin",
+    "legendarymonsters.AnnihilationGroundNukeStrikeEntityMixin",
     "iceandfire.FrozenDataMixin",
     "iceandfire.EntitySeaSerpentMixin",
     "iceandfire.FlyingAITargetMixin",
-    "lendercataclysm.Ignis_EntityMixin"
+    "lendercataclysm.Ignis_EntityMixin",
+    "majruszlibrary.LootHelperMixin"
   ],
   "client": [
     "emi.EmiRecipesMixin",

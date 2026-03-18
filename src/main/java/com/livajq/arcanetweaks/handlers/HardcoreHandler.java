@@ -13,6 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -75,6 +76,7 @@ public class HardcoreHandler {
     @SubscribeEvent
     public static void onRenderGui(RenderGuiOverlayEvent.Post event) {
         if (!Config.hardcoreIconVisible) return;
+        if (!event.getOverlay().id().equals(VanillaGuiOverlay.HOTBAR.id())) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.player.level() == null) return;
         if (!mc.player.level().getLevelData().isHardcore()) return;
@@ -93,10 +95,23 @@ public class HardcoreHandler {
         int y = (int) (screenHeight * yPercent);
         
         int size = Config.hardcoreIconSize;
-
+        int maxLives = Config.hardcoreLivesCount;
+        
+        double percent = (lives / (double) maxLives) * 100.0;
+        int iconTier;
+        
+        if (lives == 1) iconTier = 1;
+        else {
+            if (percent <= 20) iconTier = 1;
+            else if (percent <= 40) iconTier = 2;
+            else if (percent <= 60) iconTier = 3;
+            else if (percent <= 80) iconTier = 4;
+            else iconTier = 5;
+        }
+        
         int u, v;
-        switch (lives) {
-            case 5 -> { u = 34; v = 9; }  //TODO correct to % ratio
+        switch (iconTier) {
+            case 5 -> { u = 34; v = 9; }
             case 4 -> { u = 16; v = 0; }
             case 3 -> { u = 34; v = 0; }
             case 2 -> { u = 52; v = 0; }

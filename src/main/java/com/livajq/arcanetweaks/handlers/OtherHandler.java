@@ -9,7 +9,6 @@ import com.livajq.arcanetweaks.world.district.DistrictBiomeSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -38,12 +37,14 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.joml.Vector3f;
 
+import java.util.UUID;
 import java.util.function.Function;
 
 @Mod.EventBusSubscriber(modid = ArcaneTweaks.MODID)
 public class OtherHandler {
     
     private static final ResourceKey<Level> ABYSS = ResourceKey.create(Registries.DIMENSION, new ResourceLocation("lostworlds", "abyss"));
+    private static final UUID HER_ID = UUID.fromString("7905095f-4e96-43d1-83a0-870265821205");
     
     //certain eyes used as dimension teleporters instead
     @SubscribeEvent
@@ -109,7 +110,7 @@ public class OtherHandler {
         if (player == null) return;
         
         if (player.tickCount % 2 != 0) return;
-        if (!player.getGameProfile().getName().equals("LunarEclipseV2")) return;
+        if (!player.getUUID().equals(HER_ID)) return;
         
         if (!player.level().isClientSide) {
             if (!(player instanceof ServerPlayer serverPlayer)) return;

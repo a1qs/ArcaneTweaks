@@ -12,7 +12,9 @@ import com.livajq.arcanetweaks.handlers.ResourceReloadHandler;
 import com.livajq.arcanetweaks.init.ArcaneBiomeSources;
 import com.livajq.arcanetweaks.init.ArcaneEntities;
 import com.livajq.arcanetweaks.init.ArcaneSounds;
+import com.livajq.arcanetweaks.util.ItemObliteratorGenerator;
 import com.livajq.arcanetweaks.util.ReskillableGenerator;
+import com.livajq.arcanetweaks.util.SpecialDeathMessages;
 import com.livajq.arcanetweaks.world.level.storage.loot.predicates.ModLootConditions;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
@@ -25,6 +27,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
@@ -61,6 +64,7 @@ public class ArcaneTweaks {
             BiomeConfigLoader.init();
             PacketHandler.register();
             //ReskillableGenerator.generateReskillableEntries();
+            //ItemObliteratorGenerator.generateObliteratorBlacklist();
         });
     }
     
@@ -80,6 +84,13 @@ public class ArcaneTweaks {
         public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event) {
             event.register(new ResourceLocation(MODID, "the_end_skybox"), new EndSkyboxEffects());
             event.register(new ResourceLocation("minecraft", "the_end"), new BetterEndSkyEffect());
+        }
+        
+        @SubscribeEvent
+        public static void onClientSetup(FMLClientSetupEvent event) {
+            event.enqueueWork(() -> {
+                SpecialDeathMessages.init();
+            });
         }
     }
 }

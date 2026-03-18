@@ -54,6 +54,8 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<String> RESKILLABLE_MAGIC_BONUS;
     private static final ForgeConfigSpec.ConfigValue<Integer> WORLDGEN_TYPE;
     private static final ForgeConfigSpec.ConfigValue<Double> OBLITERATOR_DAMAGE_CAP;
+    private static final ForgeConfigSpec.ConfigValue<Double> OBLITERATOR_GROUND_NUKE_DAMAGE_FLAT;
+    private static final ForgeConfigSpec.ConfigValue<Double> OBLITERATOR_GROUND_NUKE_DAMAGE_PERCENT;
     private static final ForgeConfigSpec.ConfigValue<Double> RESISTANCE_AMOUNT;
     private static final ForgeConfigSpec.ConfigValue<Double> FIRE_RESISTANCE_AMOUNT;
     private static final ForgeConfigSpec.ConfigValue<Integer> HARDCORE_LIVES_COUNT;
@@ -65,6 +67,8 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<Integer> DRAGON_NUKE_COLOR_FIRE;
     private static final ForgeConfigSpec.ConfigValue<Integer> DRAGON_NUKE_COLOR_ICE;
     private static final ForgeConfigSpec.ConfigValue<Integer> DRAGON_NUKE_COLOR_LIGHTNING;
+    private static final ForgeConfigSpec.ConfigValue<Double> FORSAKEN_SPORE_DMG_DEALT;
+    private static final ForgeConfigSpec.ConfigValue<Double> FORSAKEN_SPORE_DMG_TAKEN;
     
     static {
         BUILDER.push("Mobs");
@@ -134,6 +138,13 @@ public final class Config {
         
         BUILDER.pop();
         
+        BUILDER.push("Forsaken");
+        
+        FORSAKEN_SPORE_DMG_DEALT = BUILDER.comment("Multiplier for the damage dealt to Spore mobs by Forsaken").define("forsakenSporeDmgDealt", 15.0D);
+        FORSAKEN_SPORE_DMG_TAKEN = BUILDER.comment("Multiplier for the damage taken by Forsaken from Spore mobs").define("forsakenSporeDmgTaken", 0.05D);
+        
+        BUILDER.pop();
+        
         SEA_SERPENT_REACH = BUILDER.comment("Attack reach bonus for sea serpents. 0.5 = 50% extra reach etc.").define("seaSerpentReach", 1.0D);
         
         BUILDER.pop();
@@ -170,6 +181,8 @@ public final class Config {
         
         BUILDER.push("Obliterator");
         OBLITERATOR_DAMAGE_CAP = BUILDER.comment("Maximum damage the Obliterator boss can receive per hit").define("obliteratorDamageCap", 200.0D);
+        OBLITERATOR_GROUND_NUKE_DAMAGE_FLAT = BUILDER.comment("Flat damage bonus for the ground nuke attack. Also affects the Tesseract").define("obliteratorGroundNukeDamageFlat", 100.0D);
+        OBLITERATOR_GROUND_NUKE_DAMAGE_PERCENT = BUILDER.comment("Bonus damage based on target's maximum health for the ground nuke attack. 0.5 = 50% of target's max health dealt as extra damage. Also affects the Tesseract").define("obliteratorGroundNukeDamagePercent", 0.1D);
         BUILDER.pop();
         
         BUILDER.pop();
@@ -301,6 +314,8 @@ public final class Config {
     public static ResourceKey<Biome> apostleSuperbossBiome;
     public static int worldgenType;
     public static double obliteratorDamageCap;
+    public static double obliteratorGroundNukeDamageFlat;
+    public static double obliteratorGroundNukeDamagePercent;
     public static double resistanceAmount;
     public static double fireResistanceAmount;
     public static int hardcoreLivesCount;
@@ -312,6 +327,8 @@ public final class Config {
     public static int dragonNukeColorFire;
     public static int dragonNukeColorIce;
     public static int dragonNukeColorLightning;
+    public static double forsakenSporeDamageDealt;
+    public static double forsakenSporeDamageTaken;
     
     // =========================================================
     // Sync
@@ -338,6 +355,8 @@ public final class Config {
         apostleSuperbossBiome = ResourceKey.create(Registries.BIOME, new ResourceLocation(APOSTLE_SUPPERBOSS_BIOME.get()));
         worldgenType = Mth.clamp(WORLDGEN_TYPE.get(), 0, 2);
         obliteratorDamageCap = OBLITERATOR_DAMAGE_CAP.get();
+        obliteratorGroundNukeDamageFlat = OBLITERATOR_GROUND_NUKE_DAMAGE_FLAT.get();
+        obliteratorGroundNukeDamagePercent = OBLITERATOR_GROUND_NUKE_DAMAGE_PERCENT.get();
         resistanceAmount = RESISTANCE_AMOUNT.get();
         fireResistanceAmount = FIRE_RESISTANCE_AMOUNT.get();
         hardcoreLivesCount = Math.max(HARDCORE_LIVES_COUNT.get(), 1);
@@ -349,6 +368,8 @@ public final class Config {
         dragonNukeColorFire = DRAGON_NUKE_COLOR_FIRE.get();
         dragonNukeColorIce = DRAGON_NUKE_COLOR_ICE.get();
         dragonNukeColorLightning = DRAGON_NUKE_COLOR_LIGHTNING.get();
+        forsakenSporeDamageDealt = FORSAKEN_SPORE_DMG_DEALT.get();
+        forsakenSporeDamageTaken = FORSAKEN_SPORE_DMG_TAKEN.get();
     }
     
     // =========================================================

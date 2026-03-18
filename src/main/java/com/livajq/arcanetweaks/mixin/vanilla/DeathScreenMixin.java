@@ -2,9 +2,11 @@ package com.livajq.arcanetweaks.mixin.vanilla;
 
 import com.livajq.arcanetweaks.Config;
 import com.livajq.arcanetweaks.handlers.HardcoreHandler;
+import com.livajq.arcanetweaks.util.SpecialDeathMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.DeathScreen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -45,7 +47,12 @@ public abstract class DeathScreenMixin {
     
     @Inject(method = "init", at = @At("TAIL"))
     private void selectDeathMessage(CallbackInfo ci) {
-        List<String> messages = Config.deathMessages;
+        List<String> messages;
+        LocalPlayer player = Minecraft.getInstance().player;
+        
+        if (player != null && SpecialDeathMessages.DEATH_MESSAGES.containsKey(player.getUUID())) messages = SpecialDeathMessages.DEATH_MESSAGES.get(player.getUUID());
+        else messages = Config.deathMessages;
+        
         if (!messages.isEmpty()) {
             Random rand = new Random();
             arcanetweaks$selectedDeathMessage = messages.get(rand.nextInt(messages.size()));

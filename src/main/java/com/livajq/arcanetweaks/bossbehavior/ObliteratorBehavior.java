@@ -166,7 +166,7 @@ public class ObliteratorBehavior extends BossBehavior<TheObliteratorEntity> {
                 boss.getAttributeValue(Attributes.MOVEMENT_SPEED) / 2
         );
         
-        clone.setCustomName(Component.literal("Revenant"));
+        clone.setCustomName(Component.literal("Annihilation Clone"));
         
         LivingEntity target = boss.getTarget();
         if (target != null) clone.setTarget(target);
