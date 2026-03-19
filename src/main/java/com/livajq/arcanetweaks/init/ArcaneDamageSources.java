@@ -3,10 +3,12 @@ package com.livajq.arcanetweaks.init;
 import com.livajq.arcanetweaks.ArcaneTweaks;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 public final class ArcaneDamageSources {
@@ -18,6 +20,17 @@ public final class ArcaneDamageSources {
                 .registryOrThrow(Registries.DAMAGE_TYPE)
                 .getHolderOrThrow(VAPORIZED);
         
-        return new DamageSource(type);
+        return new DamageSource(type) {
+            
+            @Override
+            public Component getLocalizedDeathMessage(LivingEntity entity) {
+                int i = entity.getRandom().nextInt(4);
+               
+                return Component.translatable(
+                        "death.attack.vaporized." + i,
+                        entity.getDisplayName()
+                );
+            }
+        };
     }
 }

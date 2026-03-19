@@ -18,5 +18,10 @@
     "sounds": [
       { "name": "arcanetweaks:dragon_nuke_explode" }
     ]
+  },
+  "mrkrabs_sadge": {
+    "sounds": [
+      { "name": "arcanetweaks:mrkrabs_sadge" }
+    ]
   }
 }

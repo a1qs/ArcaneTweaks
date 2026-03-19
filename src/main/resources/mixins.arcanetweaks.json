@@ -11,6 +11,7 @@
     "vanilla.ServerLevelMixin",
     "vanilla.LivingEntityMixin",
     "vanilla.ServerGamePacketListenerImplMixin",
+    "vanilla.WitherSkullBlockMixin",
     "betterend.DragonTreeFeatureMixin",
     "betterend.GiganticAmaranitaFeatureMixin",
     "betterend.HelixTreeFeatureMixin",
@@ -33,11 +34,13 @@
     "iceandfire.EntitySeaSerpentMixin",
     "iceandfire.FlyingAITargetMixin",
     "lendercataclysm.Ignis_EntityMixin",
-    "majruszlibrary.LootHelperMixin"
+    "majruszlibrary.LootHelperMixin",
+    "lostcities.BuildingInfoMixin"
   ],
   "client": [
     "emi.EmiRecipesMixin",
     "vanilla.DeathScreenMixin",
+    "vanilla.LivingEntityRendererMixin",
     "iceandfire.MushroomCloudParticleMixin"
   ]
 }

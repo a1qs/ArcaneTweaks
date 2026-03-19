@@ -40,6 +40,7 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> EMI_RECIPE_WHITELIST;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> DEATH_MESSAGES;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> DRAGON_NUKE_IMMUNE;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> LOST_CITIES_DOORS;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_END_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_ADEPT_NETHER_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_EXPERT_NETHER_BIOMETAG;
@@ -289,6 +290,19 @@ public final class Config {
                         o -> o instanceof String
                 );
         
+        LOST_CITIES_DOORS = BUILDER
+                .comment("List of doors to choose from when generating Lost Cities buildings",
+                        "The same ID can be included multiple times to make it more common e.g. 'oak', 'oak', 'spruce' = 66% for oak, 33% for spruce door")
+                .defineListAllowEmpty(
+                        List.of("lostCitiesDoors"),
+                        List.of(
+                                "minecraft:oak_door",
+                                "minecraft:birch_door",
+                                "minecraft:iron_door"
+                        ),
+                        o -> o instanceof String
+                );
+        
         BUILDER.pop();
         SPEC = BUILDER.build();
     }
@@ -308,6 +322,7 @@ public final class Config {
     public static Map<SkillAttributeBonus, Supplier<Attribute>> reskillableAttributeBonuses = new HashMap<>();
     public static Map<EntityType<?>, MobStats> mobAttributeModifiers = new HashMap<>();
     public static List<String> deathMessages;
+    public static List<String> lostCitiesDoors;
     public static TagKey<Biome> ritualEndBiome;
     public static TagKey<Biome> ritualAdeptNetherBiome;
     public static TagKey<Biome> ritualExpertNetherBiome;
@@ -349,6 +364,7 @@ public final class Config {
         reskillableAttributeBonuses = parseReskillableBonuses();
         mobAttributeModifiers = parseMobAttributeModifiers();
         deathMessages = new ArrayList<>(DEATH_MESSAGES.get());
+        lostCitiesDoors = new ArrayList<>(LOST_CITIES_DOORS.get());
         ritualEndBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_END_BIOMETAG.get()));
         ritualAdeptNetherBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_ADEPT_NETHER_BIOMETAG.get()));
         ritualExpertNetherBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_EXPERT_NETHER_BIOMETAG.get()));

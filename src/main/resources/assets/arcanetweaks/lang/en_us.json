@@ -1,10 +1,9 @@
 {
   "entity.arcanetweaks.test_boss": "Bozo",
   "deathScreen.respawnLives": "Respawn (%s lives remaining)",
-  "death.attack.vaporized": [
-    "%1$s was reduced to atoms.",
-    "%1$s was vaporized.",
-    "%1$s was obliterated.",
-    "%1$s vanished in a flash of draconic fury."
-  ]
+  "death.attack.vaporized.0": "%1$s was reduced to atoms.",
+  "death.attack.vaporized.1": "%1$s was vaporized.",
+  "death.attack.vaporized.2": "%1$s was obliterated.",
+  "death.attack.vaporized.3": "%1$s vanished in a flash of draconic fury.",
+  "arcanetweaks.wither_summon_tip": "Check the questbook on how to summon the wither"
 }
