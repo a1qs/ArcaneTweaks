@@ -127,3 +127,10 @@ mandatory=true
 versionRange="[1.20-7.3.6,)"
 ordering="AFTER"
 side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="nameless_trinkets"
+mandatory=true
+versionRange="[1.20.1-1.8.5,)"
+ordering="AFTER"
+side="BOTH"

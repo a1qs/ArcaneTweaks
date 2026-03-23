@@ -40,6 +40,7 @@ public abstract class DragonBehavior<T extends EntityDragonBase> extends BossBeh
     
     @Override
     public void onPhaseTick(EntityDragonBase boss, int phase) {
+        if (boss.tickCount < 10) return;
         if (boss.getHealth() <= 0 || boss.getDragonStage() != 5 || boss.isTame()) return;
         CompoundTag tag = boss.getPersistentData();
         int countdown = tag.getInt(TAG_COUNTDOWN);
@@ -71,6 +72,7 @@ public abstract class DragonBehavior<T extends EntityDragonBase> extends BossBeh
     public void onPhaseChange(EntityDragonBase boss, int newPhase, int oldPhase, boolean firstTime) {
         if (!firstTime || newPhase != 2) return;
         if (boss.getDragonStage() != 5) return;
+        if (boss.tickCount < 10) return;
         startNukeCharge(boss);
     }
     

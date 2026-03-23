@@ -87,6 +87,8 @@ dependencies {
     compileOnly fg.deobf("curse.maven:majruszs-progressive-difficulty-${majruszs_progressive_difficulty_version}")
     compileOnly fg.deobf("curse.maven:majrusz-library-${majrusz_library_version}")
     implementation fg.deobf("curse.maven:the-lost-cities-${lost_cities_version}")
+    implementation fg.deobf("curse.maven:nameless-trinkets-${nameless_trinkets_version}")
+    implementation fg.deobf("curse.maven:expandability-${expandability_version}")
 }
 
 mixin {

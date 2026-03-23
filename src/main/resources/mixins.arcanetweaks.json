@@ -12,6 +12,8 @@
     "vanilla.LivingEntityMixin",
     "vanilla.ServerGamePacketListenerImplMixin",
     "vanilla.WitherSkullBlockMixin",
+    "vanilla.MobMixin",
+    "vanilla.EnchantmentMixin",
     "betterend.DragonTreeFeatureMixin",
     "betterend.GiganticAmaranitaFeatureMixin",
     "betterend.HelixTreeFeatureMixin",
@@ -35,7 +37,8 @@
     "iceandfire.FlyingAITargetMixin",
     "lendercataclysm.Ignis_EntityMixin",
     "majruszlibrary.LootHelperMixin",
-    "lostcities.BuildingInfoMixin"
+    "lostcities.BuildingInfoMixin",
+    "namelesstrinkets.LootTableHandlerMixin"
   ],
   "client": [
     "emi.EmiRecipesMixin",

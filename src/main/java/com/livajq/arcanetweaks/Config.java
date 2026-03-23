@@ -41,6 +41,8 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> DEATH_MESSAGES;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> DRAGON_NUKE_IMMUNE;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> LOST_CITIES_DOORS;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> VILLAGER_BOOK_BLACKLIST;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> ENCHANTMENT_TIERS;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_END_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_ADEPT_NETHER_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_EXPERT_NETHER_BIOMETAG;
@@ -268,6 +270,33 @@ public final class Config {
         
         BUILDER.pop();
         
+        BUILDER.push("Enchantments");
+        
+        VILLAGER_BOOK_BLACKLIST = BUILDER
+                .comment("List of enchanted books that villagers cannot trade")
+                .defineListAllowEmpty(
+                        List.of("villagerBookBlacklist"),
+                        List.of(
+                                "minecraft:sharpness",
+                                "minecraft:unbreaking"
+                        ),
+                        o -> o instanceof String
+                );
+        
+        ENCHANTMENT_TIERS = BUILDER
+                .comment("Tiers for enchantments. Currently used in villager trading to determine which books can be traded at which level",
+                        "Tiers go from 1 to 4 (novice to expert villager, since master has no book trades)")
+                .defineListAllowEmpty(
+                        List.of("enchantmentTiers"),
+                        List.of(
+                                "minecraft:mending;4",
+                                "minecraft:flame;2"
+                        ),
+                        o -> o instanceof String
+                );
+        
+        BUILDER.pop();
+        
         BUILDER.push("Misc");
         
         WORLDGEN_TYPE = BUILDER
@@ -318,9 +347,11 @@ public final class Config {
     public static Set<String> emiRecipeCategoryBlacklistSet;
     public static Set<String> emiRecipeWhitelistSet;
     public static Set<String> dragonNukeImmuneSet;
+    public static Set<String> villagerBookBlacklistSet;
     public static Map<ResourceLocation, Set<ResourceLocation>> extraPlantSurfaces = new HashMap<>();
     public static Map<SkillAttributeBonus, Supplier<Attribute>> reskillableAttributeBonuses = new HashMap<>();
     public static Map<EntityType<?>, MobStats> mobAttributeModifiers = new HashMap<>();
+    public static Map<ResourceLocation, Integer> enchantmentTiers = new HashMap<>();
     public static List<String> deathMessages;
     public static List<String> lostCitiesDoors;
     public static TagKey<Biome> ritualEndBiome;
@@ -360,9 +391,11 @@ public final class Config {
         emiRecipeCategoryBlacklistSet = new HashSet<>(EMI_RECIPE_CATEGORY_BLACKLIST.get());
         emiRecipeWhitelistSet = new HashSet<>(EMI_RECIPE_WHITELIST.get());
         dragonNukeImmuneSet = new HashSet<>(DRAGON_NUKE_IMMUNE.get());
+        villagerBookBlacklistSet = new HashSet<>(VILLAGER_BOOK_BLACKLIST.get());
         extraPlantSurfaces = parsePlantSurfaces();
         reskillableAttributeBonuses = parseReskillableBonuses();
         mobAttributeModifiers = parseMobAttributeModifiers();
+        enchantmentTiers = parseEnchantmentTiers();
         deathMessages = new ArrayList<>(DEATH_MESSAGES.get());
         lostCitiesDoors = new ArrayList<>(LOST_CITIES_DOORS.get());
         ritualEndBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_END_BIOMETAG.get()));
@@ -486,4 +519,20 @@ public final class Config {
         }
         return map;
     }
+    
+    public static Map<ResourceLocation, Integer> parseEnchantmentTiers() {
+        Map<ResourceLocation, Integer> map = new HashMap<>();
+        
+        for (String entry : ENCHANTMENT_TIERS.get()) {
+            String[] parts = entry.split(";");
+            if (parts.length != 2) continue;
+            
+            ResourceLocation id = new ResourceLocation(parts[0]);
+            int tier = Integer.parseInt(parts[1]);
+            
+            map.put(id, tier);
+        }
+        return map;
+    }
+    
 }
