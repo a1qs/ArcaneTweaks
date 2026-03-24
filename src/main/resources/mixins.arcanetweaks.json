@@ -14,6 +14,7 @@
     "vanilla.WitherSkullBlockMixin",
     "vanilla.MobMixin",
     "vanilla.EnchantmentMixin",
+    "vanilla.EnchantBookForEmeraldsMixin",
     "betterend.DragonTreeFeatureMixin",
     "betterend.GiganticAmaranitaFeatureMixin",
     "betterend.HelixTreeFeatureMixin",

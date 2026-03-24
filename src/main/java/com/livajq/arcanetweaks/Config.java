@@ -72,6 +72,9 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<Integer> DRAGON_NUKE_COLOR_LIGHTNING;
     private static final ForgeConfigSpec.ConfigValue<Double> FORSAKEN_SPORE_DMG_DEALT;
     private static final ForgeConfigSpec.ConfigValue<Double> FORSAKEN_SPORE_DMG_TAKEN;
+    private static final ForgeConfigSpec.ConfigValue<String> ENCHANTMENT_SECONDARY_COST_RANGE;;
+    private static final ForgeConfigSpec.ConfigValue<String> ENCHANTMENT_SECONDARY_COST_ITEM;
+    private static final ForgeConfigSpec.ConfigValue<String> TRADING_COST_ITEM;
     
     static {
         BUILDER.push("Mobs");
@@ -270,7 +273,7 @@ public final class Config {
         
         BUILDER.pop();
         
-        BUILDER.push("Enchantments");
+        BUILDER.push("Enchantments and villagers");
         
         VILLAGER_BOOK_BLACKLIST = BUILDER
                 .comment("List of enchanted books that villagers cannot trade")
@@ -285,7 +288,7 @@ public final class Config {
         
         ENCHANTMENT_TIERS = BUILDER
                 .comment("Tiers for enchantments. Currently used in villager trading to determine which books can be traded at which level",
-                        "Tiers go from 1 to 4 (novice to expert villager, since master has no book trades)")
+                        "Tiers go from 1 to 5 (novice to master villager)")
                 .defineListAllowEmpty(
                         List.of("enchantmentTiers"),
                         List.of(
@@ -294,6 +297,12 @@ public final class Config {
                         ),
                         o -> o instanceof String
                 );
+        
+        ENCHANTMENT_SECONDARY_COST_RANGE = BUILDER.comment("Price range multiplier for the secondary item in enchanted book trades. Depends on the emerald cost",
+                "Example: range=0.5-1.5 means the cost can be anything from 50% to 150% of the emerald cost").define("enchantmentSecondaryCostRange", "0.5-1.5");
+        
+        ENCHANTMENT_SECONDARY_COST_ITEM = BUILDER.comment("Secondary item required for trading enchanted books (replaces the single book requirement)").define("enchantmentSecondaryCostItem", "kubejs:diamond_ingot");
+        TRADING_COST_ITEM = BUILDER.comment("Secondary item required for non enchanted book trades. Applies to villagers selling diamond gear").define("tradingSecondaryCostItem", "kubejs:diamond_ingot");
         
         BUILDER.pop();
         
@@ -375,6 +384,9 @@ public final class Config {
     public static int dragonNukeColorLightning;
     public static double forsakenSporeDamageDealt;
     public static double forsakenSporeDamageTaken;
+    public static Range enchantmentSecondaryCost;
+    public static ResourceLocation enchantmentSecondaryCostItem;
+    public static ResourceLocation tradingCostItem;
     
     // =========================================================
     // Sync
@@ -419,6 +431,9 @@ public final class Config {
         dragonNukeColorLightning = DRAGON_NUKE_COLOR_LIGHTNING.get();
         forsakenSporeDamageDealt = FORSAKEN_SPORE_DMG_DEALT.get();
         forsakenSporeDamageTaken = FORSAKEN_SPORE_DMG_TAKEN.get();
+        enchantmentSecondaryCost = parseEnchantmentSecondaryCost(ENCHANTMENT_SECONDARY_COST_RANGE.get(), 0.5F, 2.0F);
+        enchantmentSecondaryCostItem = new ResourceLocation(ENCHANTMENT_SECONDARY_COST_ITEM.get());
+        tradingCostItem = new ResourceLocation(TRADING_COST_ITEM.get());
     }
     
     // =========================================================
@@ -535,4 +550,31 @@ public final class Config {
         return map;
     }
     
+    public static Range parseEnchantmentSecondaryCost(String s, float defaultMin, float defaultMax) {
+        if (s == null) return new Range(defaultMin, defaultMax);
+        
+        String[] parts = s.trim().split("-");
+        if (parts.length != 2) return new Range(defaultMin, defaultMax);
+        
+        try {
+            float min = Float.parseFloat(parts[0].trim());
+            float max = Float.parseFloat(parts[1].trim());
+            
+            if (min > max) {
+                float tmp = min;
+                min = max;
+                max = tmp;
+            }
+            
+            min = Math.max(0f, min);
+            max = Math.max(min, max);
+            
+            return new Range(min, max);
+            
+        } catch (NumberFormatException e) {
+            return new Range(defaultMin, defaultMax);
+        }
+    }
+    
+    public record Range(float min, float max) {}
 }

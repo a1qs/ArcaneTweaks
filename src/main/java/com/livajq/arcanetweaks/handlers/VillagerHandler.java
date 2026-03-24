@@ -2,15 +2,11 @@ package com.livajq.arcanetweaks.handlers;
 
 import com.livajq.arcanetweaks.Config;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -19,13 +15,15 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
-import java.util.Map;
 
 @Mod.EventBusSubscriber
 public class VillagerHandler {
     
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onVillagerTrades(VillagerTradesEvent event) {
+        
+        /*  Moved to EnchantBookForEmeraldsMixin because this is scuffed, causes weird bugs, leftover trades and whatever else
+        
         if (event.getType() != VillagerProfession.LIBRARIAN) return;
         
         //replace all enchanted book trades with a tier system e.g. tier 3 sharpness can only appear at level 3 librarian and above
@@ -80,6 +78,65 @@ public class VillagerHandler {
                 );
             });
         }
+        
+         */
+        
+        VillagerProfession prof = event.getType();
+        if (prof != VillagerProfession.ARMORER &&
+                prof != VillagerProfession.TOOLSMITH &&
+                prof != VillagerProfession.WEAPONSMITH) {
+            return;
+        }
+        
+        Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
+        
+        for (int level = 1; level <= 5; level++) {
+            List<VillagerTrades.ItemListing> list = trades.get(level);
+            if (list == null) continue;
+            
+            list.replaceAll(original -> (trader, random) -> {
+                MerchantOffer base = original.getOffer(trader, random);
+                if (base == null) return null;
+                
+                ItemStack result = base.getResult();
+                Item item = result.getItem();
+                
+                Item requiredItem = ForgeRegistries.ITEMS.getValue(Config.tradingCostItem);
+                if (requiredItem == null || requiredItem == Items.AIR) requiredItem = Items.DIAMOND;
+                
+                int requiredCost = getRequiredCost(item);
+                if (requiredCost < 0) return base;
+                
+                return new MerchantOffer(
+                        new ItemStack(requiredItem, requiredCost),
+                        ItemStack.EMPTY,
+                        result.copy(),
+                        base.getMaxUses(),
+                        base.getXp(),
+                        base.getPriceMultiplier()
+                );
+            });
+        }
     }
+    
+    private static int getRequiredCost(Item item) {
+        String id = item.builtInRegistryHolder().key().location().getPath();
+        
+        return switch (id) {
+            case "diamond_helmet" -> 5;
+            case "diamond_chestplate" -> 8;
+            case "diamond_leggings" -> 7;
+            case "diamond_boots" -> 4;
+            
+            case "diamond_sword" -> 2;
+            case "diamond_pickaxe" -> 3;
+            case "diamond_axe" -> 3;
+            case "diamond_shovel" -> 1;
+            case "diamond_hoe" -> 2;
+            
+            default -> -1;
+        };
+    }
+    
     
 }
