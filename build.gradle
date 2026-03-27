@@ -89,6 +89,8 @@ dependencies {
     implementation fg.deobf("curse.maven:the-lost-cities-${lost_cities_version}")
     implementation fg.deobf("curse.maven:nameless-trinkets-${nameless_trinkets_version}")
     implementation fg.deobf("curse.maven:expandability-${expandability_version}")
+    implementation fg.deobf("curse.maven:shelmarows-hud-${shelmarows_hud_version}")
+    implementation fg.deobf("curse.maven:parcool-${parcool_version}")
 }
 
 mixin {

@@ -1,0 +1,85 @@
+package com.livajq.arcanetweaks.mixin.shelmarowhud;
+
+import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.capabilities.Capabilities;
+import com.majruszlibrary.annotation.Dist;
+import com.majruszlibrary.annotation.OnlyIn;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
+import net.minecraftforge.fml.ModList;
+import net.shelmarow.shel_hud.client.hud.HUDRenderer;
+import net.shelmarow.shel_hud.config.HUDConfig;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+
+@OnlyIn(Dist.CLIENT)
+@Mixin(HUDRenderer.class)
+public class HUDRendererMixin {
+
+    @Shadow
+    @Final
+    private static Minecraft mc;
+
+    @ModifyVariable(
+            method = "renderSimpleType",
+            at = @At(value = "STORE", ordinal = 2),
+            name = "staminaPercent",
+            remap = false
+    )
+    private static float overrideStaminaPercent(float original) {
+        if (!ModList.get().isLoaded("parcool")) return original;
+
+        IStamina s = mc.player.getCapability(Capabilities.STAMINA_CAPABILITY).orElse(null);
+        if (s != null) return (float) s.get() / s.getActualMaxStamina();
+
+        return original;
+    }
+
+    @ModifyVariable(
+            method = "renderSimpleType",
+            at = @At(value = "STORE", ordinal = 2),
+            name = "totalStaminaWidth",
+            remap = false
+    )
+    private static int overrideTotalStaminaWidth(int original) {
+        if (!ModList.get().isLoaded("parcool")) return original;
+
+        IStamina s = mc.player.getCapability(Capabilities.STAMINA_CAPABILITY).orElse(null);
+        if (s != null) return Mth.clamp(Math.round((HUDConfig.PIX_PER_STAMINA.get()).floatValue() * s.getActualMaxStamina()), 6, HUDConfig.MAX_STAMINA_WIDTH.get());
+
+        return original;
+    }
+
+    @ModifyVariable(
+            method = "renderSoulLikeType",
+            at = @At(value = "STORE", ordinal = 2),
+            name = "staminaRatio",
+            remap = false
+    )
+    private static float overrideStaminaRatio(float original) {
+        if (!ModList.get().isLoaded("parcool")) return original;
+
+        IStamina s = mc.player.getCapability(Capabilities.STAMINA_CAPABILITY).orElse(null);
+        if (s != null) return (float) s.get() / s.getActualMaxStamina();
+
+        return original;
+    }
+
+    @ModifyVariable(
+            method = "renderSoulLikeType",
+            at = @At(value = "STORE", ordinal = 2),
+            name = "totalMaxStaminaPix",
+            remap = false
+    )
+    private static int overrideTotalMaxStaminaPix(int original) {
+        if (!ModList.get().isLoaded("parcool")) return original;
+
+        IStamina s = mc.player.getCapability(Capabilities.STAMINA_CAPABILITY).orElse(null);
+        if (s != null) return Mth.clamp(Math.round((HUDConfig.PIX_PER_STAMINA.get()).floatValue() * s.getActualMaxStamina()), 5, HUDConfig.MAX_STAMINA_WIDTH.get());
+
+        return original;
+    }
+}

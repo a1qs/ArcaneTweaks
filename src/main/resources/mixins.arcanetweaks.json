@@ -45,6 +45,7 @@
     "emi.EmiRecipesMixin",
     "vanilla.DeathScreenMixin",
     "vanilla.LivingEntityRendererMixin",
-    "iceandfire.MushroomCloudParticleMixin"
+    "iceandfire.MushroomCloudParticleMixin",
+    "shelmarowhud.HUDRendererMixin"
   ]
 }
