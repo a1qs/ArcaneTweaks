@@ -43,6 +43,7 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> LOST_CITIES_DOORS;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> VILLAGER_BOOK_BLACKLIST;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> ENCHANTMENT_TIERS;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> MOB_REPLACEMENTS;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_END_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_ADEPT_NETHER_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_EXPERT_NETHER_BIOMETAG;
@@ -121,7 +122,7 @@ public final class Config {
                         ),
                         o -> o instanceof String
                 );
-        
+
         BUILDER.pop();
         
         BUILDER.push("Dragons");
@@ -142,6 +143,24 @@ public final class Config {
                         o -> o instanceof String
                 );
         
+        BUILDER.pop();
+
+        BUILDER.push("Mob replacements");
+        BUILDER.comment("Can be used to add a chance for an entity to be replaced with a different entity on the first spawn");
+
+        MOB_REPLACEMENTS = BUILDER
+                .comment("Format: oldID;newID;chance",
+                        "Example: minecraft:skeleton;minecraft:zombie;0.1"
+                )
+                .defineListAllowEmpty(
+                        List.of("mobReplacements"),
+                        List.of(
+                                "minecraft:skeleton;minecraft:zombie;0.1",
+                                "minecraft:enderman;minecraft:creeper;0.05"
+                        ),
+                        o -> o instanceof String
+                );
+
         BUILDER.pop();
         
         BUILDER.push("Forsaken");
@@ -363,6 +382,7 @@ public final class Config {
     public static Map<ResourceLocation, Integer> enchantmentTiers = new HashMap<>();
     public static List<String> deathMessages;
     public static List<String> lostCitiesDoors;
+    public static List<MobReplacement> mobReplacements;
     public static TagKey<Biome> ritualEndBiome;
     public static TagKey<Biome> ritualAdeptNetherBiome;
     public static TagKey<Biome> ritualExpertNetherBiome;
@@ -410,6 +430,7 @@ public final class Config {
         enchantmentTiers = parseEnchantmentTiers();
         deathMessages = new ArrayList<>(DEATH_MESSAGES.get());
         lostCitiesDoors = new ArrayList<>(LOST_CITIES_DOORS.get());
+        mobReplacements = parseMobReplacements();
         ritualEndBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_END_BIOMETAG.get()));
         ritualAdeptNetherBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_ADEPT_NETHER_BIOMETAG.get()));
         ritualExpertNetherBiome = TagKey.create(Registries.BIOME, new ResourceLocation(RITUAL_EXPERT_NETHER_BIOMETAG.get()));
@@ -575,6 +596,31 @@ public final class Config {
             return new Range(defaultMin, defaultMax);
         }
     }
-    
+
+    public static List<MobReplacement> parseMobReplacements() {
+        List<MobReplacement> list = new ArrayList<>();
+
+        for (String line : MOB_REPLACEMENTS.get()) {
+            String[] parts = line.split(";");
+
+            try {
+                ResourceLocation oldId = new ResourceLocation(parts[0]);
+                ResourceLocation newId = new ResourceLocation(parts[1]);
+                double chance = Double.parseDouble(parts[2]);
+
+                if (chance < 0 || chance > 1) {
+                    throw new IllegalArgumentException("Chance must be between 0 and 1: " + line);
+                }
+
+                list.add(new MobReplacement(oldId, newId, chance));
+            } catch (Exception e) {
+                ArcaneTweaks.LOGGER.warn("Invalid mob replacement entry '{}': {}", line, e.getMessage());
+            }
+        }
+
+        return list;
+    }
+
     public record Range(float min, float max) {}
+    public record MobReplacement(ResourceLocation oldId, ResourceLocation newId, double chance) {}
 }

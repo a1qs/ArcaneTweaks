@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -18,6 +19,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -28,6 +30,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.LevelEvent;
@@ -214,4 +217,40 @@ public class OtherHandler {
             }
         }
     }
+
+    //Randomly replace a mob with a different one on the very first spawn
+    @SubscribeEvent
+    public static void onEntityJoin(EntityJoinLevelEvent event) {
+        if (!(event.getEntity() instanceof LivingEntity entity)) return;
+        if (event.getLevel().isClientSide()) return;
+
+        CompoundTag tag = entity.getPersistentData();
+        if (tag.getBoolean("ArcaneTweaks_SpawnFlag")) return;
+        tag.putBoolean("ArcaneTweaks_SpawnFlag", true);
+
+        ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(entity.getType());
+        if (id == null) return;
+
+        for (Config.MobReplacement rule : Config.mobReplacements) {
+            if (!rule.oldId().equals(id)) continue;
+
+            if (entity.getRandom().nextDouble() > rule.chance()) continue;
+
+            EntityType<?> newType = ForgeRegistries.ENTITY_TYPES.getValue(rule.newId());
+            if (newType == null) {
+                ArcaneTweaks.LOGGER.warn("Unknown replacement entity type: {}", rule.newId());
+                continue;
+            }
+
+            Entity replacement = newType.create(entity.level());
+            if (replacement == null) continue;
+
+            replacement.setPos(entity.position());
+            entity.level().addFreshEntity(replacement);
+
+            event.setCanceled(true);
+            return;
+        }
+    }
+
 }
