@@ -39,7 +39,8 @@
     "lendercataclysm.Ignis_EntityMixin",
     "majruszlibrary.LootHelperMixin",
     "lostcities.BuildingInfoMixin",
-    "namelesstrinkets.LootTableHandlerMixin"
+    "namelesstrinkets.LootTableHandlerMixin",
+    "eeeabsmobs.EMArmorMaterialMixin"
   ],
   "client": [
     "emi.EmiRecipesMixin",

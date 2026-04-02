@@ -137,6 +137,4 @@ public class VillagerHandler {
             default -> -1;
         };
     }
-    
-    
 }

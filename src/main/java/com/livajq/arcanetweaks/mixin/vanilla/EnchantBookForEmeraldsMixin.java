@@ -54,12 +54,17 @@ public class EnchantBookForEmeraldsMixin {
         int vanillaEmeraldCost = emeralds.getCount();
         
         Config.Range r = Config.enchantmentSecondaryCost;
+        Item item = ForgeRegistries.ITEMS.getValue(Config.enchantmentSecondaryCostItem);
+        if (item == null || item == Items.AIR) item = Items.DIAMOND;
+        ItemStack secondaryItem = new ItemStack(item, 1);
+        
         float multiplier = Mth.nextFloat(random, r.min(), r.max());
         int secondaryAmount = Math.round(vanillaEmeraldCost * multiplier);
-        secondaryAmount = Mth.clamp(secondaryAmount, 1, 64);
-        Item secondaryItem = ForgeRegistries.ITEMS.getValue(Config.enchantmentSecondaryCostItem);
-        if (secondaryItem == null || secondaryItem == Items.AIR) secondaryItem = Items.DIAMOND;
+        int max = secondaryItem.getMaxStackSize();
         
-        return new MerchantOffer(new ItemStack(Items.EMERALD, vanillaEmeraldCost), new ItemStack(secondaryItem, secondaryAmount), result, maxUses, xp, priceMult);
+        secondaryAmount = Mth.clamp(secondaryAmount, 1, max);
+        secondaryItem.setCount(secondaryAmount);
+        
+        return new MerchantOffer(emeralds, secondaryItem, result, maxUses, xp, priceMult);
     }
 }
