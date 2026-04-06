@@ -5,6 +5,8 @@ import com.livajq.arcanetweaks.common.capability.bossminion.BossMinionData;
 import com.livajq.arcanetweaks.common.capability.bossminion.BossMinionProvider;
 import com.livajq.arcanetweaks.common.capability.foodbonuses.FoodBonusesData;
 import com.livajq.arcanetweaks.common.capability.foodbonuses.FoodBonusesProvider;
+import com.livajq.arcanetweaks.common.capability.parry.ParryData;
+import com.livajq.arcanetweaks.common.capability.parry.ParryProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -25,8 +27,9 @@ public class CapabilitiesHandler {
             event.addCapability(new ResourceLocation(ArcaneTweaks.MODID, "boss_minion"), provider);
         }
         
-        if (event.getObject() instanceof Player) {
-            event.addCapability( new ResourceLocation(ArcaneTweaks.MODID, "food_bonuses"), new FoodBonusesProvider());
+        if (event.getObject() instanceof Player player) {
+            event.addCapability(new ResourceLocation(ArcaneTweaks.MODID, "food_bonuses"), new FoodBonusesProvider());
+            event.addCapability(new ResourceLocation(ArcaneTweaks.MODID, "parry"), new ParryProvider(player));
         }
     }
     
@@ -34,6 +37,7 @@ public class CapabilitiesHandler {
     public static void register(RegisterCapabilitiesEvent event) {
         event.register(BossMinionData.class);
         event.register(FoodBonusesData.class);
+        event.register(ParryData.class);
     }
 }
 

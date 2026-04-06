@@ -83,6 +83,10 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<Integer> BLOCK_BREAK_COOLDOWN_BASE;
     private static final ForgeConfigSpec.ConfigValue<Integer> BLOCK_BREAK_COOLDOWN_EXTRA;
     private static final ForgeConfigSpec.ConfigValue<Integer> BLOCK_BREAK_COOLDOWN_MAX;
+    private static final ForgeConfigSpec.ConfigValue<Integer> PARRY_WIND_UP;
+    private static final ForgeConfigSpec.ConfigValue<Integer> PARRY_WINDOW;
+    private static final ForgeConfigSpec.ConfigValue<Integer> PARRY_COOLDOWN_FAIL;
+    private static final ForgeConfigSpec.ConfigValue<Integer> PARRY_COOLDOWN_SUCCESS;
    
     static {
         BUILDER.push("Mobs");
@@ -342,7 +346,7 @@ public final class Config {
         
         BUILDER.pop();
         
-        BUILDER.push("Blocking");
+        BUILDER.push("Parrying and blocking");
         BUILDER.comment("Affects Spartan Weaponry melee block trait");
         
         BLOCK_STAMINA_CONSUME_BASE = BUILDER.comment("Base stamina cost for blocking").define("blockStaminaConsumeBase", 200);
@@ -351,6 +355,10 @@ public final class Config {
         BLOCK_BREAK_COOLDOWN_BASE = BUILDER.comment("Base block cooldown (in ticks) from block disabling attackers").define("blockBreakCooldownBase", 60);
         BLOCK_BREAK_COOLDOWN_EXTRA = BUILDER.comment("Additional block cooldown (in ticks) from block disabling attackers per incoming damage point").define("blockBreakCooldownExtra", 10);
         BLOCK_BREAK_COOLDOWN_MAX = BUILDER.comment("Maximum block cooldown (in ticks) from block disabling attackers").define("blockBreakCooldownMax", 200);
+        PARRY_WIND_UP = BUILDER.comment("Wind up (in ticks) after blocking before parrying can be performed").define("parryWindUp", 8);
+        PARRY_WINDOW = BUILDER.comment("Window (in ticks) in which enemies can be parried").define("parryWindow", 20);
+        PARRY_COOLDOWN_FAIL = BUILDER.comment("Cooldown (in ticks) after an unsuccessful parry before another one can be performed. Used to prevent spamming").define("parryCooldownFail", 30);
+        PARRY_COOLDOWN_SUCCESS = BUILDER.comment("Cooldown (in ticks) after a successful parry before another one can be performed").define("parryCooldownSuccess", 200);
         
         BUILDER.pop();
         
@@ -443,6 +451,10 @@ public final class Config {
     public static int blockBreakCooldownBase;
     public static int blockBreakCooldownExtra;
     public static int blockBreakCooldownMax;
+    public static int parryWindUp;
+    public static int parryWindow;
+    public static int parryCooldownFail;
+    public static int parryCooldownSuccess;
     
     // =========================================================
     // Sync
@@ -498,6 +510,10 @@ public final class Config {
         blockBreakCooldownBase = BLOCK_BREAK_COOLDOWN_BASE.get();
         blockBreakCooldownExtra = BLOCK_BREAK_COOLDOWN_EXTRA.get();
         blockBreakCooldownMax = BLOCK_BREAK_COOLDOWN_MAX.get();
+        parryWindUp = PARRY_WIND_UP.get();
+        parryWindow = PARRY_WINDOW.get();
+        parryCooldownFail = PARRY_COOLDOWN_FAIL.get();
+        parryCooldownSuccess = PARRY_COOLDOWN_SUCCESS.get();
     }
     
     // =========================================================
