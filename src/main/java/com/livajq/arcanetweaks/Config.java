@@ -34,6 +34,7 @@ public final class Config {
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> EXTRA_PLANT_SURFACES;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_TEMPERATURE_IMMUNITY;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_THIRST_IMMUNITY;
+    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_EXHAUSTION_IMMUNITY;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> MOB_ATTRIBUTE_MODIFIERS;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> MOB_FREEZE_IMMUNITY;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> EMI_RECIPE_CATEGORY_BLACKLIST;
@@ -76,7 +77,13 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<String> ENCHANTMENT_SECONDARY_COST_RANGE;;
     private static final ForgeConfigSpec.ConfigValue<String> ENCHANTMENT_SECONDARY_COST_ITEM;
     private static final ForgeConfigSpec.ConfigValue<String> TRADING_COST_ITEM;
-    
+    private static final ForgeConfigSpec.ConfigValue<Integer> BLOCK_STAMINA_CONSUME_BASE;
+    private static final ForgeConfigSpec.ConfigValue<Integer> BLOCK_STAMINA_CONSUME_EXTRA;
+    private static final ForgeConfigSpec.ConfigValue<Integer> BLOCK_STAMINA_CONSUME_MAX;
+    private static final ForgeConfigSpec.ConfigValue<Integer> BLOCK_BREAK_COOLDOWN_BASE;
+    private static final ForgeConfigSpec.ConfigValue<Integer> BLOCK_BREAK_COOLDOWN_EXTRA;
+    private static final ForgeConfigSpec.ConfigValue<Integer> BLOCK_BREAK_COOLDOWN_MAX;
+   
     static {
         BUILDER.push("Mobs");
         
@@ -236,6 +243,16 @@ public final class Config {
                         o -> o instanceof String
                 );
         
+        FOOD_EXHAUSTION_IMMUNITY = BUILDER
+                .comment("Food items that apply exhaustion immunity")
+                .defineListAllowEmpty(
+                        List.of("foodExhaustionImmunity"),
+                        List.of(
+                                "cavedelight:musubi"
+                        ),
+                        o -> o instanceof String
+                );
+        
         BUILDER.pop();
         
         BUILDER.push("Reskillable attribute bonuses");
@@ -325,6 +342,18 @@ public final class Config {
         
         BUILDER.pop();
         
+        BUILDER.push("Blocking");
+        BUILDER.comment("Affects Spartan Weaponry melee block trait");
+        
+        BLOCK_STAMINA_CONSUME_BASE = BUILDER.comment("Base stamina cost for blocking").define("blockStaminaConsumeBase", 200);
+        BLOCK_STAMINA_CONSUME_EXTRA = BUILDER.comment("Additional stamina cost for blocking per incoming damage point").define("blockStaminaConsumeExtra", 50);
+        BLOCK_STAMINA_CONSUME_MAX = BUILDER.comment("Maximum stamina cost for blocking").define("blockStaminaConsumeMax", 1000);
+        BLOCK_BREAK_COOLDOWN_BASE = BUILDER.comment("Base block cooldown (in ticks) from block disabling attackers").define("blockBreakCooldownBase", 60);
+        BLOCK_BREAK_COOLDOWN_EXTRA = BUILDER.comment("Additional block cooldown (in ticks) from block disabling attackers per incoming damage point").define("blockBreakCooldownExtra", 10);
+        BLOCK_BREAK_COOLDOWN_MAX = BUILDER.comment("Maximum block cooldown (in ticks) from block disabling attackers").define("blockBreakCooldownMax", 200);
+        
+        BUILDER.pop();
+        
         BUILDER.push("Misc");
         
         WORLDGEN_TYPE = BUILDER
@@ -371,6 +400,7 @@ public final class Config {
     public static Set<String> extraAlliesSet;
     public static Set<String> foodTemperatureImmunitySet;
     public static Set<String> foodThirstImmunitySet;
+    public static Set<String> foodExhaustionImmunitySet;
     public static Set<String> mobFreezeImmunitySet;
     public static Set<String> emiRecipeCategoryBlacklistSet;
     public static Set<String> emiRecipeWhitelistSet;
@@ -407,6 +437,12 @@ public final class Config {
     public static Range enchantmentSecondaryCost;
     public static ResourceLocation enchantmentSecondaryCostItem;
     public static ResourceLocation tradingCostItem;
+    public static int blockStaminaConsumeBase;
+    public static int blockStaminaConsumeExtra;
+    public static int blockStaminaConsumeMax;
+    public static int blockBreakCooldownBase;
+    public static int blockBreakCooldownExtra;
+    public static int blockBreakCooldownMax;
     
     // =========================================================
     // Sync
@@ -419,6 +455,7 @@ public final class Config {
         extraAlliesSet = new HashSet<>(EXTRA_ALLIES.get());
         foodTemperatureImmunitySet = new HashSet<>(FOOD_TEMPERATURE_IMMUNITY.get());
         foodThirstImmunitySet = new HashSet<>(FOOD_THIRST_IMMUNITY.get());
+        foodExhaustionImmunitySet = new HashSet<>(FOOD_EXHAUSTION_IMMUNITY.get());
         mobFreezeImmunitySet = new HashSet<>(MOB_FREEZE_IMMUNITY.get());
         emiRecipeCategoryBlacklistSet = new HashSet<>(EMI_RECIPE_CATEGORY_BLACKLIST.get());
         emiRecipeWhitelistSet = new HashSet<>(EMI_RECIPE_WHITELIST.get());
@@ -455,6 +492,12 @@ public final class Config {
         enchantmentSecondaryCost = parseEnchantmentSecondaryCost(ENCHANTMENT_SECONDARY_COST_RANGE.get(), 0.5F, 2.0F);
         enchantmentSecondaryCostItem = new ResourceLocation(ENCHANTMENT_SECONDARY_COST_ITEM.get());
         tradingCostItem = new ResourceLocation(TRADING_COST_ITEM.get());
+        blockStaminaConsumeBase = BLOCK_STAMINA_CONSUME_BASE.get();
+        blockStaminaConsumeExtra = BLOCK_STAMINA_CONSUME_EXTRA.get();
+        blockStaminaConsumeMax = BLOCK_STAMINA_CONSUME_MAX.get();
+        blockBreakCooldownBase = BLOCK_BREAK_COOLDOWN_BASE.get();
+        blockBreakCooldownExtra = BLOCK_BREAK_COOLDOWN_EXTRA.get();
+        blockBreakCooldownMax = BLOCK_BREAK_COOLDOWN_MAX.get();
     }
     
     // =========================================================

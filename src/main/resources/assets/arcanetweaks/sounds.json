@@ -23,5 +23,10 @@
     "sounds": [
       { "name": "arcanetweaks:mrkrabs_sadge" }
     ]
+  },
+  "melee_block_break": {
+    "sounds": [
+      { "name": "arcanetweaks:melee_block_break" }
+    ]
   }
 }

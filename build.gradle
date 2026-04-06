@@ -91,6 +91,9 @@ dependencies {
     implementation fg.deobf("curse.maven:expandability-${expandability_version}")
     implementation fg.deobf("curse.maven:shelmarows-hud-${shelmarows_hud_version}")
     implementation fg.deobf("curse.maven:parcool-${parcool_version}")
+    implementation fg.deobf("curse.maven:enhanced-ai-${enhanced_ai_version}")
+    implementation fg.deobf("curse.maven:insanelib-${insanelib_version}")
+    implementation fg.deobf("curse.maven:spartan-weaponry-${spartan_weaponry_version}")
 }
 
 mixin {

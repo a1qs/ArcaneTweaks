@@ -3,11 +3,9 @@ package com.livajq.arcanetweaks.handlers;
 import com.livajq.arcanetweaks.ArcaneTweaks;
 import com.livajq.arcanetweaks.Config;
 import com.livajq.arcanetweaks.common.capability.ArcaneCapabilities;
-import net.bandit.reskillable.common.commands.skills.SkillAttributeBonus;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,8 +19,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 @Mod.EventBusSubscriber(modid = ArcaneTweaks.MODID)
 public class FoodBonusesHandler {
     
-    public static MobEffect TEMPERATURE_IMMUNITY;
-    public static MobEffect HYDRATION_FILL;
+    private static MobEffect TEMPERATURE_IMMUNITY;
+    private static MobEffect HYDRATION_FILL;
+    private static MobEffect INEXHAUSTIBLE;
+    private static boolean effectsLoaded = false;
     
     @SubscribeEvent
     public static void onFoodEaten(LivingEntityUseItemEvent.Finish event) {
@@ -47,6 +47,12 @@ public class FoodBonusesHandler {
                 cap.setNoThirst(true);
             });
         }
+        
+        if (Config.foodExhaustionImmunitySet.contains(key)) {
+            player.getCapability(ArcaneCapabilities.FOOD_BONUSES).ifPresent(cap -> {
+                cap.setNoExhaustion(true);
+            });
+        }
     }
     
     @SubscribeEvent
@@ -57,8 +63,12 @@ public class FoodBonusesHandler {
         
         if (player.tickCount % 20 != 0) return;
         
-        if (TEMPERATURE_IMMUNITY == null && !SyncTemperatureEffect()) return;
-        if (HYDRATION_FILL == null && !SyncHydrationEffect()) return;
+        if (!effectsLoaded) {
+            TEMPERATURE_IMMUNITY = setEffect("legendarysurvivaloverhaul:temperature_immunity");
+            HYDRATION_FILL = setEffect("legendarysurvivaloverhaul:hydration_fill");
+            INEXHAUSTIBLE = setEffect("parcool:inexhaustible");
+            effectsLoaded = true;
+        }
         
         player.getCapability(ArcaneCapabilities.FOOD_BONUSES).ifPresent(cap -> {
             
@@ -68,6 +78,10 @@ public class FoodBonusesHandler {
             
             if (cap.hasNoThirst() && HYDRATION_FILL != null) {
                 player.addEffect(new MobEffectInstance(HYDRATION_FILL, 210, 0, true, false));
+            }
+            
+            if (cap.hasNoExhaustion() && INEXHAUSTIBLE != null) {
+                player.addEffect(new MobEffectInstance(INEXHAUSTIBLE, 210, 0, true, false));
             }
         });
     }
@@ -85,19 +99,14 @@ public class FoodBonusesHandler {
             newPlayer.getCapability(ArcaneCapabilities.FOOD_BONUSES).ifPresent(newCap -> {
                 newCap.setNoThirst(oldCap.hasNoThirst());
                 newCap.setNoTemperature(oldCap.hasNoTemperature());
+                newCap.setNoExhaustion(oldCap.hasNoExhaustion());
             });
         });
         
         oldPlayer.invalidateCaps();
     }
     
-    private static boolean SyncTemperatureEffect() {
-        TEMPERATURE_IMMUNITY = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation("legendarysurvivaloverhaul", "temperature_immunity"));
-        return  TEMPERATURE_IMMUNITY != null;
-    }
-    
-    private static boolean SyncHydrationEffect() {
-        HYDRATION_FILL = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation("legendarysurvivaloverhaul", "hydration_fill"));
-        return  HYDRATION_FILL != null;
+    private static MobEffect setEffect(String id) {
+        return ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(id));
     }
 }

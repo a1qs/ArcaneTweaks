@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
+//obsolete now but piece of history
 @OnlyIn(Dist.CLIENT)
 @Mixin(HUDRenderer.class)
 public class HUDRendererMixin {

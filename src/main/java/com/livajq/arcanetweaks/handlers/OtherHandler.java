@@ -6,6 +6,7 @@ import com.livajq.arcanetweaks.ArcaneTweaks;
 import com.livajq.arcanetweaks.Config;
 import com.livajq.arcanetweaks.mixin.vanilla.ChunkGeneratorAccessor;
 import com.livajq.arcanetweaks.world.district.DistrictBiomeSource;
+import insane96mcp.enhancedai.modules.mobs.Leaders;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -21,8 +22,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -32,15 +35,17 @@ import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.joml.Vector3f;
 
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 
 @Mod.EventBusSubscriber(modid = ArcaneTweaks.MODID)
@@ -137,9 +142,8 @@ public class OtherHandler {
                         0, 0, 0,
                         0
                 );
-                
-                spawnWings(other, 1.0F);
             }
+            spawnWings(player, 1.0F);
             return;
         }
 
@@ -186,16 +190,33 @@ public class OtherHandler {
             double x = 0.2 + t * 1.2;
             double y = Math.sin(t * Math.PI) * 0.8;
             
-            spawnWingParticle(level, baseX, baseY, baseZ, x, y, rad);
-            spawnWingParticle(level, baseX, baseY, baseZ, -x, y, rad);
+            spawnWingParticle(player, level, baseX, baseY, baseZ, x, y, rad);
+            spawnWingParticle(player, level, baseX, baseY, baseZ, -x, y, rad);
         }
     }
     
-    private static void spawnWingParticle(Level level, double baseX, double baseY, double baseZ, double x, double y, double rad) {
+    private static void spawnWingParticle(Player player, Level level, double baseX, double baseY, double baseZ, double x, double y, double rad) {
         double rx = x * Math.cos(rad);
         double rz = x * Math.sin(rad);
         
-        level.addParticle(
+        if (level instanceof ServerLevel serverLevel) {
+            for (ServerPlayer other : serverLevel.players()) {
+                if (other == player) continue;
+                
+                serverLevel.sendParticles(
+                        
+                        other,
+                        new DustParticleOptions(new Vector3f(1.0f, 0.85f, 0.2f), 1.2f),
+                        false,
+                        baseX + rx,
+                        baseY + y,
+                        baseZ + rz,
+                        1, 0, 0, 0, 0
+                );
+            }
+        }
+        
+        else level.addParticle(
                 new DustParticleOptions(new Vector3f(1.0f, 0.85f, 0.2f), 1.2f),
                 baseX + rx,
                 baseY + y,
@@ -216,6 +237,33 @@ public class OtherHandler {
                 if (!prev) worldData.setIgnisDefeatedOnce(true);
             }
         }
+    }
+    
+    //add more drops to leader mobs. Eclipse wanted it hardcoded idk
+    @SubscribeEvent
+    public static void onLivingDrops(LivingDropsEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (!ModList.get().isLoaded("enhancedai")) return;
+        if (!Leaders.isLeader(entity)) return;
+        
+        Level level = entity.level();
+        double x = entity.getX();
+        double y = entity.getY();
+        double z = entity.getZ();
+        
+        Map<Item, Integer> itemCounts = new HashMap<>();
+        
+        Item arcaneEssence = ForgeRegistries.ITEMS.getValue(new ResourceLocation("irons_spellbooks", "arcane_essence"));
+        Item glowingPowder = ForgeRegistries.ITEMS.getValue(new ResourceLocation("trinketsandbaubles", "glowing_powder"));
+        Item ectoplasm = ForgeRegistries.ITEMS.getValue(new ResourceLocation("goety", "ectoplasm"));
+        if (arcaneEssence != null) itemCounts.put(arcaneEssence, entity.getRandom().nextInt(4) + 1);
+        if (glowingPowder != null) itemCounts.put(glowingPowder, 1);
+        if (ectoplasm != null) itemCounts.put(ectoplasm, entity.getRandom().nextInt(2) + 1);
+        
+        itemCounts.forEach((item, count) -> {
+            ItemStack stack = new ItemStack(item, count);
+            event.getDrops().add(new ItemEntity(level, x, y, z, stack));
+        });
     }
 
     //Randomly replace a mob with a different one on the very first spawn

@@ -30,4 +30,8 @@ public class ArcaneSounds {
     public static final RegistryObject<SoundEvent> MRKRABS_SADGE =
             SOUNDS.register("mrkrabs_sadge",
                     () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(ArcaneTweaks.MODID, "mrkrabs_sadge")));
+    
+    public static final RegistryObject<SoundEvent> MELEE_BLOCK_BREAK =
+            SOUNDS.register("melee_block_break",
+                    () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(ArcaneTweaks.MODID, "melee_block_break")));
 }

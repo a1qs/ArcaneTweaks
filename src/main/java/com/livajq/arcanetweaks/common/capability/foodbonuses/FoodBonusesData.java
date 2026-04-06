@@ -6,4 +6,7 @@ public interface FoodBonusesData {
     
     boolean hasNoTemperature();
     void setNoTemperature(boolean value);
+    
+    boolean hasNoExhaustion();
+    void setNoExhaustion(boolean value);
 }

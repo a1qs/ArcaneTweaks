@@ -1,6 +1,7 @@
 package com.livajq.arcanetweaks.handlers;
 
 import com.livajq.arcanetweaks.packet.SyncHardcoreLivesPacket;
+import com.livajq.arcanetweaks.packet.UseParcoolStaminaServerPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -20,5 +21,6 @@ public class PacketHandler {
         int id = 0;
         
         INSTANCE.registerMessage(id++, SyncHardcoreLivesPacket.class, SyncHardcoreLivesPacket::encode, SyncHardcoreLivesPacket::decode, SyncHardcoreLivesPacket::handle);
+        INSTANCE.registerMessage(id++, UseParcoolStaminaServerPacket.class, UseParcoolStaminaServerPacket::encode, UseParcoolStaminaServerPacket::decode, UseParcoolStaminaServerPacket::handle);
     }
 }

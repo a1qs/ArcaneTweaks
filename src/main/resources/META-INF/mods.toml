@@ -148,3 +148,17 @@ mandatory=false
 versionRange="[3.4.3.3,)"
 ordering="AFTER"
 side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="enhancedai"
+mandatory=false
+versionRange="[3.3.6.3,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="spartanweaponry"
+mandatory=true
+versionRange="[3.2.1,)"
+ordering="AFTER"
+side="BOTH"
