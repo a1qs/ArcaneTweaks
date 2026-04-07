@@ -34,4 +34,8 @@ public class ArcaneSounds {
     public static final RegistryObject<SoundEvent> MELEE_BLOCK_BREAK =
             SOUNDS.register("melee_block_break",
                     () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(ArcaneTweaks.MODID, "melee_block_break")));
+    
+    public static final RegistryObject<SoundEvent> MELEE_PARRY =
+            SOUNDS.register("melee_parry",
+                    () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(ArcaneTweaks.MODID, "melee_parry")));
 }

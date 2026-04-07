@@ -28,5 +28,10 @@
     "sounds": [
       { "name": "arcanetweaks:melee_block_break" }
     ]
+  },
+  "melee_parry": {
+    "sounds": [
+      { "name": "arcanetweaks:melee_parry" }
+    ]
   }
 }

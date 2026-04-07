@@ -138,7 +138,7 @@ side="BOTH"
 [[dependencies.${mod_id}]]
 modId="shelmarow_hud"
 mandatory=false
-versionRange="[1.0.3.2-forge-1.20.1,)"
+versionRange="[1.1.0-forge-1.20.1,)"
 ordering="AFTER"
 side="CLIENT"
 

@@ -1,21 +1,8 @@
 package com.livajq.arcanetweaks.mixin.shelmarowhud;
 
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.capabilities.Capabilities;
-import com.majruszlibrary.annotation.Dist;
-import com.majruszlibrary.annotation.OnlyIn;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.Mth;
-import net.minecraftforge.fml.ModList;
-import net.shelmarow.shel_hud.client.hud.HUDRenderer;
-import net.shelmarow.shel_hud.config.HUDConfig;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-
 //obsolete now but piece of history
+
+/*
 @OnlyIn(Dist.CLIENT)
 @Mixin(HUDRenderer.class)
 public class HUDRendererMixin {
@@ -83,4 +70,7 @@ public class HUDRendererMixin {
 
         return original;
     }
+    
 }
+
+ */

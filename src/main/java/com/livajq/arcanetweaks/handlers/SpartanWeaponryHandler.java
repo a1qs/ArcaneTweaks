@@ -45,6 +45,7 @@ public class SpartanWeaponryHandler {
                     event.setCanceled(true);
                     return;
                 }
+                else cap.performParryFail();
                 
                 if (attacker.getType().is(ArcaneTags.DISABLES_MELEE_BLOCK)) {
                     player.stopUsingItem();
