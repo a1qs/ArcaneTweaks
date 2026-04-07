@@ -26,11 +26,11 @@ public class SyncHardcoreLivesPacket {
     public static void handle(SyncHardcoreLivesPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             Minecraft mc = Minecraft.getInstance();
-            if (mc.player != null) {
-                mc.player.getPersistentData()
-                        .putInt(HardcoreHandler.HARDCORE_TAG, msg.lives);
-            }
+            if (mc.player == null) return;
+            
+            mc.player.getPersistentData().putInt(HardcoreHandler.HARDCORE_TAG, msg.lives);
         });
+        
         ctx.get().setPacketHandled(true);
     }
 }

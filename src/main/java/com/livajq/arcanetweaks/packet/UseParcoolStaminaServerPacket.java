@@ -3,7 +3,6 @@ package com.livajq.arcanetweaks.packet;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -14,23 +13,21 @@ public class UseParcoolStaminaServerPacket {
     public UseParcoolStaminaServerPacket(int amount) {
         this.amount = amount;
     }
+   
+    public static void encode(UseParcoolStaminaServerPacket msg, FriendlyByteBuf buf) {
+        buf.writeInt(msg.amount);
+    }
     
     public static UseParcoolStaminaServerPacket decode(FriendlyByteBuf buf) {
         return new UseParcoolStaminaServerPacket(buf.readInt());
     }
     
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeInt(amount);
-    }
-
-    public void handle(Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(UseParcoolStaminaServerPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            Player player = Minecraft.getInstance().player;
-            if (player == null) return;
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.player == null) return;
             
-            player.getCapability(Capabilities.STAMINA_CAPABILITY).ifPresent(stamina -> {
-                stamina.consume(amount);
-            });
+            mc.player.getCapability(Capabilities.STAMINA_CAPABILITY).ifPresent(stamina -> stamina.consume(msg.amount));
         });
         
         ctx.get().setPacketHandled(true);
