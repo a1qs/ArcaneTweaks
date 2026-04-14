@@ -71,7 +71,7 @@ public abstract class DragonBehavior<T extends EntityDragonBase> extends BossBeh
     @Override
     public void onPhaseChange(EntityDragonBase boss, int newPhase, int oldPhase, boolean firstTime) {
         if (!firstTime || newPhase != 2) return;
-        if (boss.getDragonStage() != 5) return;
+        if (boss.getDragonStage() != 5 || boss.isTame()) return;
         if (boss.tickCount < 10) return;
         startNukeCharge(boss);
     }

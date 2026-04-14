@@ -1,36 +1,52 @@
 package com.livajq.arcanetweaks.handlers;
 
 import com.eeeab.eeeabsmobs.sever.init.ItemInit;
+import com.gametechbc.traveloptics.entity.mobs.nightwarden_boss.NightwardenBossEntity;
 import com.github.L_Ender.cataclysm.world.data.CMWorldData;
 import com.livajq.arcanetweaks.ArcaneTweaks;
 import com.livajq.arcanetweaks.Config;
+import com.livajq.arcanetweaks.init.ArcaneSounds;
 import com.livajq.arcanetweaks.mixin.vanilla.ChunkGeneratorAccessor;
 import com.livajq.arcanetweaks.world.district.DistrictBiomeSource;
+import com.mojang.blaze3d.systems.RenderSystem;
 import insane96mcp.enhancedai.modules.mobs.Leaders;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
@@ -40,6 +56,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -53,6 +70,8 @@ public class OtherHandler {
     
     private static final ResourceKey<Level> ABYSS = ResourceKey.create(Registries.DIMENSION, new ResourceLocation("lostworlds", "abyss"));
     private static final UUID HER_ID = UUID.fromString("7905095f-4e96-43d1-83a0-870265821205");
+    private static final UUID WOMPWOMP_ID = UUID.fromString("9b65f606-23d8-428e-a769-5817ca979faf");
+    private static final ResourceLocation MEME = new ResourceLocation(ArcaneTweaks.MODID, "textures/misc/lol.png");
     
     //certain eyes used as dimension teleporters instead
     @SubscribeEvent
@@ -300,5 +319,127 @@ public class OtherHandler {
             return;
         }
     }
-
+    
+    //invalidate a certain run :3
+    @SubscribeEvent
+    public static void onLivingDeathFun(LivingDeathEvent event) {
+        if (!(event.getEntity() instanceof NightwardenBossEntity)) return;
+        if (!(event.getSource().getEntity() instanceof Player player)) return;
+        if (!player.getUUID().equals(WOMPWOMP_ID)) return;
+        if (player.isCreative()) return;
+        CompoundTag tag = player.getPersistentData();
+        
+        tag.putInt("ArcaneTweaks_RunInvalid_1", 100);
+    }
+    
+    //shit code but whatever. temporary
+    @SubscribeEvent
+    public static void onPlayerTickFun(TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+        Player player = event.player;
+        if (!player.getUUID().equals(WOMPWOMP_ID)) return;
+        
+        CompoundTag tag = player.getPersistentData();
+        
+        if (!tag.contains("ArcaneTweaks_GoofyScreen")) {
+            ItemStack main = player.getMainHandItem();
+            if (main.getItem() == Items.DEAD_BUSH) {
+                if (main.getHoverName().getString().equals("Cringe, brother")) tag.putInt("ArcaneTweaks_GoofyScreen", 100);
+            }
+            else if (player.getMaxHealth() >= 1000) tag.putInt("ArcaneTweaks_GoofyScreen", 100);
+        }
+        
+        if (event.side == LogicalSide.CLIENT) return;
+        
+        if (!tag.contains("ArcaneTweaks_RunInvalid_1")) return;
+        
+        if (tag.getInt("ArcaneTweaks_RunInvalid_1") == 0) {
+            tag.putInt("ArcaneTweaks_RunInvalid_2", 100);
+            tag.putInt("ArcaneTweaks_RunInvalid_1", Integer.MAX_VALUE);
+            invalid1(player);
+        }
+        else tag.putInt("ArcaneTweaks_RunInvalid_1",  tag.getInt("ArcaneTweaks_RunInvalid_1") - 1);
+        
+        if (!tag.contains("ArcaneTweaks_RunInvalid_2")) return;
+        
+        if (tag.getInt("ArcaneTweaks_RunInvalid_2") == 0) {
+            tag.putInt("ArcaneTweaks_RunInvalid_3", 60);
+            tag.putInt("ArcaneTweaks_RunInvalid_2", Integer.MAX_VALUE);
+            invalid2(player);
+        }
+        else tag.putInt("ArcaneTweaks_RunInvalid_2",  tag.getInt("ArcaneTweaks_RunInvalid_2") - 1);
+        
+        if (!tag.contains("ArcaneTweaks_RunInvalid_3")) return;
+        
+        if (tag.getInt("ArcaneTweaks_RunInvalid_3") == 0) {
+            tag.putInt("ArcaneTweaks_RunInvalid_3", Integer.MAX_VALUE);
+            invalid3(player);
+        }
+        else tag.putInt("ArcaneTweaks_RunInvalid_3",  tag.getInt("ArcaneTweaks_RunInvalid_3") - 1);
+    }
+    
+    private static void invalid1(Player player) {
+        player.sendSystemMessage(Component.literal("Oh wow, you are the first person to beat the pack, congrats! You can now ask Velkhana for a reward..."));
+    }
+    
+    private static void invalid2(Player player) {
+        player.sendSystemMessage(Component.literal("Oh wait! You cheated, nevermind RUN INVALID HAHAHHAhHSFHEUOGIHtgh231trwtazg"));
+    }
+    
+    private static void invalid3(Player player) {
+        Inventory inv = player.getInventory();
+        ItemStack deadbush = new ItemStack(Items.DEAD_BUSH);
+        deadbush.setHoverName(Component.literal("Cringe, brother"));
+        
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            inv.setItem(i, deadbush.copy());
+        }
+        
+        inv.setChanged();
+        
+        MobEffect madness = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation("spore", "madness"));
+        MobEffect marker = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation("spore", "marker"));
+        MobEffect hex = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation("goety", "burn_hex"));
+        MobEffect irradiated  = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation("alexscaves", "irradiated"));
+        
+        if (madness != null) player.addEffect(new MobEffectInstance(madness, Integer.MAX_VALUE, 0));
+        if (marker != null) player.addEffect(new MobEffectInstance(marker, Integer.MAX_VALUE, 0));
+        if (hex != null) player.addEffect(new MobEffectInstance(hex, Integer.MAX_VALUE, 0));
+        if (irradiated != null) player.addEffect(new MobEffectInstance(irradiated, Integer.MAX_VALUE, 0));
+        
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                ArcaneSounds.FUNNEHSOUND.get(), SoundSource.PLAYERS, 1f, 1f);
+        
+        player.getAttribute(Attributes.MAX_HEALTH).setBaseValue(696969);
+        player.setHealth(696969);
+    }
+    
+    //it's bugged but became even funnier so refactored to intentional
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onRenderOverlay(RenderGuiOverlayEvent.Post event) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null) return;
+        
+        CompoundTag tag = player.getPersistentData();
+        if (!tag.contains("ArcaneTweaks_GoofyScreen")) return;
+       
+        float alpha;
+        if (player.tickCount % 2 == 0) alpha = 1.0f;
+        else alpha = 0.0f;
+        
+        GuiGraphics gui = event.getGuiGraphics();
+        Minecraft mc = Minecraft.getInstance();
+        
+        int w = mc.getWindow().getGuiScaledWidth();
+        int h = mc.getWindow().getGuiScaledHeight();
+        
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
+        
+        gui.blit(MEME, 0, 0, 0, 0, w, h, w, h);
+        
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.disableBlend();
+    }
 }

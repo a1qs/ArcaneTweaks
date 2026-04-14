@@ -33,5 +33,10 @@
     "sounds": [
       { "name": "arcanetweaks:melee_parry" }
     ]
+  },
+  "funnehsound": {
+    "sounds": [
+      { "name": "arcanetweaks:funnehsound" }
+    ]
   }
 }

@@ -31,10 +31,10 @@ public final class Config {
     // =========================================================
     
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> EXTRA_ALLIES;
-    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> EXTRA_PLANT_SURFACES;
-    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_TEMPERATURE_IMMUNITY;
-    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_THIRST_IMMUNITY;
-    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_EXHAUSTION_IMMUNITY;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> EXTRA_PLANT_SURFACES;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_TEMPERATURE_IMMUNITY;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_THIRST_IMMUNITY;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_EXHAUSTION_IMMUNITY;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> MOB_ATTRIBUTE_MODIFIERS;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> MOB_FREEZE_IMMUNITY;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> EMI_RECIPE_CATEGORY_BLACKLIST;
@@ -45,6 +45,7 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> VILLAGER_BOOK_BLACKLIST;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> ENCHANTMENT_TIERS;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> MOB_REPLACEMENTS;
+    
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_END_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_ADEPT_NETHER_BIOMETAG;
     private static final ForgeConfigSpec.ConfigValue<String> RITUAL_EXPERT_NETHER_BIOMETAG;
@@ -57,36 +58,42 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<String> RESKILLABLE_DEFENSE_BONUS;
     private static final ForgeConfigSpec.ConfigValue<String> RESKILLABLE_AGILITY_BONUS;
     private static final ForgeConfigSpec.ConfigValue<String> RESKILLABLE_MAGIC_BONUS;
-    private static final ForgeConfigSpec.ConfigValue<Integer> WORLDGEN_TYPE;
-    private static final ForgeConfigSpec.ConfigValue<Double> OBLITERATOR_DAMAGE_CAP;
-    private static final ForgeConfigSpec.ConfigValue<Double> OBLITERATOR_GROUND_NUKE_DAMAGE_FLAT;
-    private static final ForgeConfigSpec.ConfigValue<Double> OBLITERATOR_GROUND_NUKE_DAMAGE_PERCENT;
-    private static final ForgeConfigSpec.ConfigValue<Double> RESISTANCE_AMOUNT;
-    private static final ForgeConfigSpec.ConfigValue<Double> FIRE_RESISTANCE_AMOUNT;
-    private static final ForgeConfigSpec.ConfigValue<Integer> HARDCORE_LIVES_COUNT;
-    private static final ForgeConfigSpec.ConfigValue<Boolean> HARDCORE_ICON_VISIBLE;
-    private static final ForgeConfigSpec.ConfigValue<Integer> HARDCORE_ICON_SIZE;
-    private static final ForgeConfigSpec.ConfigValue<Double> HARDCORE_ICON_POSX;
-    private static final ForgeConfigSpec.ConfigValue<Double> HARDCORE_ICON_POSY;
-    private static final ForgeConfigSpec.ConfigValue<Double> SEA_SERPENT_REACH;
-    private static final ForgeConfigSpec.ConfigValue<Integer> DRAGON_NUKE_COLOR_FIRE;
-    private static final ForgeConfigSpec.ConfigValue<Integer> DRAGON_NUKE_COLOR_ICE;
-    private static final ForgeConfigSpec.ConfigValue<Integer> DRAGON_NUKE_COLOR_LIGHTNING;
-    private static final ForgeConfigSpec.ConfigValue<Double> FORSAKEN_SPORE_DMG_DEALT;
-    private static final ForgeConfigSpec.ConfigValue<Double> FORSAKEN_SPORE_DMG_TAKEN;
-    private static final ForgeConfigSpec.ConfigValue<String> ENCHANTMENT_SECONDARY_COST_RANGE;;
+    private static final ForgeConfigSpec.ConfigValue<String> ENCHANTMENT_SECONDARY_COST_RANGE;
     private static final ForgeConfigSpec.ConfigValue<String> ENCHANTMENT_SECONDARY_COST_ITEM;
     private static final ForgeConfigSpec.ConfigValue<String> TRADING_COST_ITEM;
-    private static final ForgeConfigSpec.ConfigValue<Integer> BLOCK_STAMINA_CONSUME_BASE;
-    private static final ForgeConfigSpec.ConfigValue<Integer> BLOCK_STAMINA_CONSUME_EXTRA;
-    private static final ForgeConfigSpec.ConfigValue<Integer> BLOCK_STAMINA_CONSUME_MAX;
-    private static final ForgeConfigSpec.ConfigValue<Integer> BLOCK_BREAK_COOLDOWN_BASE;
-    private static final ForgeConfigSpec.ConfigValue<Integer> BLOCK_BREAK_COOLDOWN_EXTRA;
-    private static final ForgeConfigSpec.ConfigValue<Integer> BLOCK_BREAK_COOLDOWN_MAX;
-    private static final ForgeConfigSpec.ConfigValue<Integer> PARRY_WIND_UP;
-    private static final ForgeConfigSpec.ConfigValue<Integer> PARRY_WINDOW;
-    private static final ForgeConfigSpec.ConfigValue<Integer> PARRY_COOLDOWN_FAIL;
-    private static final ForgeConfigSpec.ConfigValue<Integer> PARRY_COOLDOWN_SUCCESS;
+    
+    private static final ForgeConfigSpec.BooleanValue HARDCORE_ICON_VISIBLE;
+    
+    private static final ForgeConfigSpec.DoubleValue OBLITERATOR_DAMAGE_CAP;
+    private static final ForgeConfigSpec.DoubleValue OBLITERATOR_GROUND_NUKE_DAMAGE_FLAT;
+    private static final ForgeConfigSpec.DoubleValue OBLITERATOR_GROUND_NUKE_DAMAGE_PERCENT;
+    private static final ForgeConfigSpec.DoubleValue RESISTANCE_AMOUNT;
+    private static final ForgeConfigSpec.DoubleValue FIRE_RESISTANCE_AMOUNT;
+    private static final ForgeConfigSpec.DoubleValue HARDCORE_ICON_POSX;
+    private static final ForgeConfigSpec.DoubleValue HARDCORE_ICON_POSY;
+    private static final ForgeConfigSpec.DoubleValue SEA_SERPENT_REACH;
+    private static final ForgeConfigSpec.DoubleValue FORSAKEN_SPORE_DMG_DEALT;
+    private static final ForgeConfigSpec.DoubleValue FORSAKEN_SPORE_DMG_TAKEN;
+    
+    private static final ForgeConfigSpec.IntValue WORLDGEN_TYPE;
+    private static final ForgeConfigSpec.IntValue HARDCORE_LIVES_COUNT;
+    private static final ForgeConfigSpec.IntValue HARDCORE_ICON_SIZE;
+    private static final ForgeConfigSpec.IntValue DRAGON_NUKE_COLOR_FIRE;
+    private static final ForgeConfigSpec.IntValue DRAGON_NUKE_COLOR_ICE;
+    private static final ForgeConfigSpec.IntValue DRAGON_NUKE_COLOR_LIGHTNING;
+    private static final ForgeConfigSpec.IntValue BLOCK_STAMINA_CONSUME_BASE;
+    private static final ForgeConfigSpec.IntValue BLOCK_STAMINA_CONSUME_EXTRA;
+    private static final ForgeConfigSpec.IntValue BLOCK_STAMINA_CONSUME_MAX;
+    private static final ForgeConfigSpec.IntValue BLOCK_BREAK_COOLDOWN_BASE;
+    private static final ForgeConfigSpec.IntValue BLOCK_BREAK_COOLDOWN_EXTRA;
+    private static final ForgeConfigSpec.IntValue BLOCK_BREAK_COOLDOWN_MAX;
+    private static final ForgeConfigSpec.IntValue PARRY_WIND_UP;
+    private static final ForgeConfigSpec.IntValue PARRY_WINDOW;
+    private static final ForgeConfigSpec.IntValue PARRY_COOLDOWN_FAIL;
+    private static final ForgeConfigSpec.IntValue PARRY_COOLDOWN_SUCCESS;
+    private static final ForgeConfigSpec.IntValue GAMESTAGE_SKILL_CAP_NORMAL;
+    private static final ForgeConfigSpec.IntValue GAMESTAGE_SKILL_CAP_EXPERT;
+    private static final ForgeConfigSpec.IntValue GAMESTAGE_SKILL_CAP_MASTER;
    
     static {
         BUILDER.push("Mobs");
@@ -176,12 +183,12 @@ public final class Config {
         
         BUILDER.push("Forsaken");
         
-        FORSAKEN_SPORE_DMG_DEALT = BUILDER.comment("Multiplier for the damage dealt to Spore mobs by Forsaken").define("forsakenSporeDmgDealt", 15.0D);
-        FORSAKEN_SPORE_DMG_TAKEN = BUILDER.comment("Multiplier for the damage taken by Forsaken from Spore mobs").define("forsakenSporeDmgTaken", 0.05D);
+        FORSAKEN_SPORE_DMG_DEALT = BUILDER.comment("Multiplier for the damage dealt to Spore mobs by Forsaken").defineInRange("forsakenSporeDmgDealt", 15.0D, -1000.0D, 1000.0D);
+        FORSAKEN_SPORE_DMG_TAKEN = BUILDER.comment("Multiplier for the damage taken by Forsaken from Spore mobs").defineInRange("forsakenSporeDmgTaken", 0.05D, 1000.0D, 1000.0D);
         
         BUILDER.pop();
         
-        SEA_SERPENT_REACH = BUILDER.comment("Attack reach bonus for sea serpents. 0.5 = 50% extra reach etc.").define("seaSerpentReach", 1.0D);
+        SEA_SERPENT_REACH = BUILDER.comment("Attack reach bonus for sea serpents. 0.5 = 50% extra reach etc.").defineInRange("seaSerpentReach", 1.0D, -1000.0D, 1000.0D);
         
         BUILDER.pop();
         BUILDER.push("Rituals");
@@ -216,9 +223,9 @@ public final class Config {
         BUILDER.pop();
         
         BUILDER.push("Obliterator");
-        OBLITERATOR_DAMAGE_CAP = BUILDER.comment("Maximum damage the Obliterator boss can receive per hit").define("obliteratorDamageCap", 200.0D);
-        OBLITERATOR_GROUND_NUKE_DAMAGE_FLAT = BUILDER.comment("Flat damage bonus for the ground nuke attack. Also affects the Tesseract").define("obliteratorGroundNukeDamageFlat", 100.0D);
-        OBLITERATOR_GROUND_NUKE_DAMAGE_PERCENT = BUILDER.comment("Bonus damage based on target's maximum health for the ground nuke attack. 0.5 = 50% of target's max health dealt as extra damage. Also affects the Tesseract").define("obliteratorGroundNukeDamagePercent", 0.1D);
+        OBLITERATOR_DAMAGE_CAP = BUILDER.comment("Maximum damage the Obliterator boss can receive per hit").defineInRange("obliteratorDamageCap", 200.0D, 0.0D, 1000000.0D);
+        OBLITERATOR_GROUND_NUKE_DAMAGE_FLAT = BUILDER.comment("Flat damage bonus for the ground nuke attack. Also affects the Tesseract").defineInRange("obliteratorGroundNukeDamageFlat", 100.0D, -1000000.0D, 1000000.0D);
+        OBLITERATOR_GROUND_NUKE_DAMAGE_PERCENT = BUILDER.comment("Bonus damage based on target's maximum health for the ground nuke attack. 0.5 = 50% of target's max health dealt as extra damage. Also affects the Tesseract").defineInRange("obliteratorGroundNukeDamagePercent", 0.1D, -1000.0D, 1000.0D);
         BUILDER.pop();
         
         BUILDER.pop();
@@ -259,7 +266,7 @@ public final class Config {
         
         BUILDER.pop();
         
-        BUILDER.push("Reskillable attribute bonuses");
+        BUILDER.push("Reskillable attributes and bonuses");
         BUILDER.comment("Attribute bonus that should be applied for each skill. NONE for no bonus, DEFAULT to use default (reskillable) ones");
         
         RESKILLABLE_ATTACK_BONUS = BUILDER.define("attack", "minecraft:generic.luck");
@@ -270,6 +277,10 @@ public final class Config {
         RESKILLABLE_DEFENSE_BONUS = BUILDER.define("defense", "DEFAULT");
         RESKILLABLE_AGILITY_BONUS = BUILDER.define("agility", "DEFAULT");
         RESKILLABLE_MAGIC_BONUS = BUILDER.define("magic", "DEFAULT");
+        
+        GAMESTAGE_SKILL_CAP_NORMAL = BUILDER.comment("Maximum skill level in Normal Mode").defineInRange("gamestageSkillCapNormal", 16, 1, 50);
+        GAMESTAGE_SKILL_CAP_EXPERT = BUILDER.comment("Maximum skill level in Expert Mode").defineInRange("gamestageSkillCapExpert", 32, 1, 50);
+        GAMESTAGE_SKILL_CAP_MASTER = BUILDER.comment("Maximum skill level in Master Mode").defineInRange("gamestageSkillCapMaster", 50, 1, 50);
         
         BUILDER.pop();
         
@@ -305,11 +316,11 @@ public final class Config {
         
         BUILDER.push("Hardcore");
         
-        HARDCORE_LIVES_COUNT = BUILDER.comment("Amount of lives the player has in hardcore mode").define("hardcoreLivesCount", 5);
+        HARDCORE_LIVES_COUNT = BUILDER.comment("Amount of lives the player has in hardcore mode").defineInRange("hardcoreLivesCount", 5, 1, 2137);
         HARDCORE_ICON_VISIBLE = BUILDER.comment("Should the hardcore heart icon be displayed on the screen").define("hardcoreIconVisible", true);
-        HARDCORE_ICON_SIZE = BUILDER.comment("Hardcore icon size").define("hardcoreIconSize", 16);
-        HARDCORE_ICON_POSX = BUILDER.comment("Hardcore icon position X (0-100%)").define("hardcoreIconPosX", 2.0D);
-        HARDCORE_ICON_POSY = BUILDER.comment("Hardcore icon position Y (0-100%)").define("hardcoreIconPosY", 2.0D);
+        HARDCORE_ICON_SIZE = BUILDER.comment("Hardcore icon size").defineInRange("hardcoreIconSize", 16, 4, 1024);
+        HARDCORE_ICON_POSX = BUILDER.comment("Hardcore icon position X (0-100%)").defineInRange("hardcoreIconPosX", 2.0D, 0.1D, 99.9D);
+        HARDCORE_ICON_POSY = BUILDER.comment("Hardcore icon position Y (0-100%)").defineInRange("hardcoreIconPosY", 2.0D, 0.1D, 99.9D);
         
         BUILDER.pop();
         
@@ -349,16 +360,16 @@ public final class Config {
         BUILDER.push("Parrying and blocking");
         BUILDER.comment("Affects Spartan Weaponry melee block trait");
         
-        BLOCK_STAMINA_CONSUME_BASE = BUILDER.comment("Base stamina cost for blocking").define("blockStaminaConsumeBase", 200);
-        BLOCK_STAMINA_CONSUME_EXTRA = BUILDER.comment("Additional stamina cost for blocking per incoming damage point").define("blockStaminaConsumeExtra", 50);
-        BLOCK_STAMINA_CONSUME_MAX = BUILDER.comment("Maximum stamina cost for blocking").define("blockStaminaConsumeMax", 1000);
-        BLOCK_BREAK_COOLDOWN_BASE = BUILDER.comment("Base block cooldown (in ticks) from block disabling attackers").define("blockBreakCooldownBase", 60);
-        BLOCK_BREAK_COOLDOWN_EXTRA = BUILDER.comment("Additional block cooldown (in ticks) from block disabling attackers per incoming damage point").define("blockBreakCooldownExtra", 10);
-        BLOCK_BREAK_COOLDOWN_MAX = BUILDER.comment("Maximum block cooldown (in ticks) from block disabling attackers").define("blockBreakCooldownMax", 200);
-        PARRY_WIND_UP = BUILDER.comment("Wind up (in ticks) after blocking before parrying can be performed").define("parryWindUp", 8);
-        PARRY_WINDOW = BUILDER.comment("Window (in ticks) in which enemies can be parried").define("parryWindow", 20);
-        PARRY_COOLDOWN_FAIL = BUILDER.comment("Cooldown (in ticks) after an unsuccessful parry before another one can be performed. Used to prevent spamming").define("parryCooldownFail", 30);
-        PARRY_COOLDOWN_SUCCESS = BUILDER.comment("Cooldown (in ticks) after a successful parry before another one can be performed").define("parryCooldownSuccess", 200);
+        BLOCK_STAMINA_CONSUME_BASE = BUILDER.comment("Base stamina cost for blocking").defineInRange("blockStaminaConsumeBase", 200, 0, 1000000);
+        BLOCK_STAMINA_CONSUME_EXTRA = BUILDER.comment("Additional stamina cost for blocking per incoming damage point").defineInRange("blockStaminaConsumeExtra", 50, 0, 1000000);
+        BLOCK_STAMINA_CONSUME_MAX = BUILDER.comment("Maximum stamina cost for blocking").defineInRange("blockStaminaConsumeMax", 1000, 0, 1000000);
+        BLOCK_BREAK_COOLDOWN_BASE = BUILDER.comment("Base block cooldown (in ticks) from block disabling attackers").defineInRange("blockBreakCooldownBase", 60, 0, 1000000);
+        BLOCK_BREAK_COOLDOWN_EXTRA = BUILDER.comment("Additional block cooldown (in ticks) from block disabling attackers per incoming damage point").defineInRange("blockBreakCooldownExtra", 10, 0, 1000000);
+        BLOCK_BREAK_COOLDOWN_MAX = BUILDER.comment("Maximum block cooldown (in ticks) from block disabling attackers").defineInRange("blockBreakCooldownMax", 200, 0, 1000000);
+        PARRY_WIND_UP = BUILDER.comment("Wind up (in ticks) after blocking before parrying can be performed").defineInRange("parryWindUp", 8, 0, 1000000);
+        PARRY_WINDOW = BUILDER.comment("Window (in ticks) in which enemies can be parried").defineInRange("parryWindow", 20, 0, 1000000);
+        PARRY_COOLDOWN_FAIL = BUILDER.comment("Cooldown (in ticks) after an unsuccessful parry before another one can be performed. Used to prevent spamming").defineInRange("parryCooldownFail", 30, 0, 1000000);
+        PARRY_COOLDOWN_SUCCESS = BUILDER.comment("Cooldown (in ticks) after a successful parry before another one can be performed").defineInRange("parryCooldownSuccess", 200, 0, 1000000);
         
         BUILDER.pop();
         
@@ -367,10 +378,10 @@ public final class Config {
         WORLDGEN_TYPE = BUILDER
                 .comment("World generation type",
                         "0: Default (vanilla), 1: Arcane, 2: Biome Blend")
-                .define("worldgenType", 1);
+                .defineInRange("worldgenType", 1, 0, 2);
         
-        RESISTANCE_AMOUNT = BUILDER.comment("Damage reduced by the resistance effect per level (0 - 1)").define("resistanceAmount", 0.1D);
-        FIRE_RESISTANCE_AMOUNT = BUILDER.comment("Fire damage reduced by the fire resistance effect per level (0 - 1)").define("fireResistanceAmount", 0.1D);
+        RESISTANCE_AMOUNT = BUILDER.comment("Damage reduced by the resistance effect per level (0 - 1)").defineInRange("resistanceAmount", 0.1D, 0.0D, 1.0D);
+        FIRE_RESISTANCE_AMOUNT = BUILDER.comment("Fire damage reduced by the fire resistance effect per level (0 - 1)").defineInRange("fireResistanceAmount", 0.1D, 0.0D, 1.0D);
         
         DEATH_MESSAGES = BUILDER
                 .comment("Extra messages that appear on the death screen")
@@ -414,37 +425,43 @@ public final class Config {
     public static Set<String> emiRecipeWhitelistSet;
     public static Set<String> dragonNukeImmuneSet;
     public static Set<String> villagerBookBlacklistSet;
+ 
     public static Map<ResourceLocation, Set<ResourceLocation>> extraPlantSurfaces = new HashMap<>();
     public static Map<SkillAttributeBonus, Supplier<Attribute>> reskillableAttributeBonuses = new HashMap<>();
     public static Map<EntityType<?>, MobStats> mobAttributeModifiers = new HashMap<>();
     public static Map<ResourceLocation, Integer> enchantmentTiers = new HashMap<>();
+ 
     public static List<String> deathMessages;
     public static List<String> lostCitiesDoors;
     public static List<MobReplacement> mobReplacements;
+    
+    public static ResourceKey<Biome> apostleSuperbossBiome;
+    public static ResourceLocation enchantmentSecondaryCostItem;
+    public static ResourceLocation tradingCostItem;
+    public static Range enchantmentSecondaryCost;
     public static TagKey<Biome> ritualEndBiome;
     public static TagKey<Biome> ritualAdeptNetherBiome;
     public static TagKey<Biome> ritualExpertNetherBiome;
-    public static ResourceKey<Biome> apostleSuperbossBiome;
-    public static int worldgenType;
+    
+    public static boolean hardcoreIconVisible;
+    
     public static double obliteratorDamageCap;
     public static double obliteratorGroundNukeDamageFlat;
     public static double obliteratorGroundNukeDamagePercent;
     public static double resistanceAmount;
     public static double fireResistanceAmount;
-    public static int hardcoreLivesCount;
-    public static boolean hardcoreIconVisible;
-    public static int hardcoreIconSize;
     public static double hardcoreIconPosX;
     public static double hardcoreIconPosY;
     public static double seaSerpentReach;
+    public static double forsakenSporeDamageDealt;
+    public static double forsakenSporeDamageTaken;
+    
+    public static int worldgenType;
+    public static int hardcoreLivesCount;
+    public static int hardcoreIconSize;
     public static int dragonNukeColorFire;
     public static int dragonNukeColorIce;
     public static int dragonNukeColorLightning;
-    public static double forsakenSporeDamageDealt;
-    public static double forsakenSporeDamageTaken;
-    public static Range enchantmentSecondaryCost;
-    public static ResourceLocation enchantmentSecondaryCostItem;
-    public static ResourceLocation tradingCostItem;
     public static int blockStaminaConsumeBase;
     public static int blockStaminaConsumeExtra;
     public static int blockStaminaConsumeMax;
@@ -455,6 +472,9 @@ public final class Config {
     public static int parryWindow;
     public static int parryCooldownFail;
     public static int parryCooldownSuccess;
+    public static int gamestageSkillCapNormal;
+    public static int gamestageSkillCapExpert;
+    public static int gamestageSkillCapMaster;
     
     // =========================================================
     // Sync
@@ -514,6 +534,9 @@ public final class Config {
         parryWindow = PARRY_WINDOW.get();
         parryCooldownFail = PARRY_COOLDOWN_FAIL.get();
         parryCooldownSuccess = PARRY_COOLDOWN_SUCCESS.get();
+        gamestageSkillCapNormal = GAMESTAGE_SKILL_CAP_NORMAL.get();
+        gamestageSkillCapExpert = Math.max(gamestageSkillCapNormal, GAMESTAGE_SKILL_CAP_EXPERT.get());
+        gamestageSkillCapMaster = Math.max(gamestageSkillCapExpert, GAMESTAGE_SKILL_CAP_MASTER.get());
     }
     
     // =========================================================

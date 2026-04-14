@@ -28,6 +28,7 @@
     "goety.ApostleMixin",
     "goety.ItemEventsMixin",
     "reskillable.SkillAttributeBonusMixin",
+    "reskillable.SkillModelMixin",
     "ironsspellbooks.FurledMapItemMixin",
     "alexscaves.ACBiomeRegistryMixin",
     "alexscaves.NuclearExplosionEntityMixin",

@@ -38,4 +38,8 @@ public class ArcaneSounds {
     public static final RegistryObject<SoundEvent> MELEE_PARRY =
             SOUNDS.register("melee_parry",
                     () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(ArcaneTweaks.MODID, "melee_parry")));
+    
+    public static final RegistryObject<SoundEvent> FUNNEHSOUND =
+            SOUNDS.register("funnehsound",
+                    () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(ArcaneTweaks.MODID, "funnehsound")));
 }
