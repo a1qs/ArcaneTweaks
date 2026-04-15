@@ -63,12 +63,15 @@ public final class Config {
     private static final ForgeConfigSpec.ConfigValue<String> TRADING_COST_ITEM;
     
     private static final ForgeConfigSpec.BooleanValue HARDCORE_ICON_VISIBLE;
+    private static final ForgeConfigSpec.BooleanValue NARRATOR_KEYBIND;
     
     private static final ForgeConfigSpec.DoubleValue OBLITERATOR_DAMAGE_CAP;
     private static final ForgeConfigSpec.DoubleValue OBLITERATOR_GROUND_NUKE_DAMAGE_FLAT;
     private static final ForgeConfigSpec.DoubleValue OBLITERATOR_GROUND_NUKE_DAMAGE_PERCENT;
     private static final ForgeConfigSpec.DoubleValue RESISTANCE_AMOUNT;
     private static final ForgeConfigSpec.DoubleValue FIRE_RESISTANCE_AMOUNT;
+    private static final ForgeConfigSpec.DoubleValue ICE_RESISTANCE_AMOUNT;
+    private static final ForgeConfigSpec.DoubleValue LIGHTNING_RESISTANCE_AMOUNT;
     private static final ForgeConfigSpec.DoubleValue HARDCORE_ICON_POSX;
     private static final ForgeConfigSpec.DoubleValue HARDCORE_ICON_POSY;
     private static final ForgeConfigSpec.DoubleValue SEA_SERPENT_REACH;
@@ -373,15 +376,21 @@ public final class Config {
         
         BUILDER.pop();
         
+        BUILDER.push("Resistances");
+        
+        RESISTANCE_AMOUNT = BUILDER.comment("Damage reduced by the resistance effect per level (0 - 1)").defineInRange("resistanceAmount", 0.1D, 0.0D, 1.0D);
+        FIRE_RESISTANCE_AMOUNT = BUILDER.comment("Fire damage reduced by the fire resistance effect per level (0 - 1)").defineInRange("fireResistanceAmount", 0.1D, 0.0D, 1.0D);
+        ICE_RESISTANCE_AMOUNT = BUILDER.comment("Ice damage reduced by the ice resistance effect per level (0 - 1)").defineInRange("iceResistanceAmount", 0.1D, 0.0D, 1.0D);
+        LIGHTNING_RESISTANCE_AMOUNT = BUILDER.comment("Lightning damage reduced by the lightning resistance effect per level (0 - 1)").defineInRange("lightningResistanceAmount", 0.1D, 0.0D, 1.0D);
+        
+        BUILDER.pop();
+        
         BUILDER.push("Misc");
         
         WORLDGEN_TYPE = BUILDER
                 .comment("World generation type",
                         "0: Default (vanilla), 1: Arcane, 2: Biome Blend")
                 .defineInRange("worldgenType", 1, 0, 2);
-        
-        RESISTANCE_AMOUNT = BUILDER.comment("Damage reduced by the resistance effect per level (0 - 1)").defineInRange("resistanceAmount", 0.1D, 0.0D, 1.0D);
-        FIRE_RESISTANCE_AMOUNT = BUILDER.comment("Fire damage reduced by the fire resistance effect per level (0 - 1)").defineInRange("fireResistanceAmount", 0.1D, 0.0D, 1.0D);
         
         DEATH_MESSAGES = BUILDER
                 .comment("Extra messages that appear on the death screen")
@@ -407,6 +416,8 @@ public final class Config {
                         ),
                         o -> o instanceof String
                 );
+        
+        NARRATOR_KEYBIND = BUILDER.comment("If for some reason you want to bring the narrator keybind back, set this to true").define("narratorKeybind", false);
         
         BUILDER.pop();
         SPEC = BUILDER.build();
@@ -444,12 +455,15 @@ public final class Config {
     public static TagKey<Biome> ritualExpertNetherBiome;
     
     public static boolean hardcoreIconVisible;
+    public static boolean narratorKeybind;
     
     public static double obliteratorDamageCap;
     public static double obliteratorGroundNukeDamageFlat;
     public static double obliteratorGroundNukeDamagePercent;
     public static double resistanceAmount;
     public static double fireResistanceAmount;
+    public static double iceResistanceAmount;
+    public static double lightningResistanceAmount;
     public static double hardcoreIconPosX;
     public static double hardcoreIconPosY;
     public static double seaSerpentReach;
@@ -510,6 +524,8 @@ public final class Config {
         obliteratorGroundNukeDamagePercent = OBLITERATOR_GROUND_NUKE_DAMAGE_PERCENT.get();
         resistanceAmount = RESISTANCE_AMOUNT.get();
         fireResistanceAmount = FIRE_RESISTANCE_AMOUNT.get();
+        iceResistanceAmount = ICE_RESISTANCE_AMOUNT.get();
+        lightningResistanceAmount = LIGHTNING_RESISTANCE_AMOUNT.get();
         hardcoreLivesCount = Math.max(HARDCORE_LIVES_COUNT.get(), 1);
         hardcoreIconVisible = HARDCORE_ICON_VISIBLE.get();
         hardcoreIconSize = HARDCORE_ICON_SIZE.get();
@@ -537,6 +553,7 @@ public final class Config {
         gamestageSkillCapNormal = GAMESTAGE_SKILL_CAP_NORMAL.get();
         gamestageSkillCapExpert = Math.max(gamestageSkillCapNormal, GAMESTAGE_SKILL_CAP_EXPERT.get());
         gamestageSkillCapMaster = Math.max(gamestageSkillCapExpert, GAMESTAGE_SKILL_CAP_MASTER.get());
+        narratorKeybind = NARRATOR_KEYBIND.get();
     }
     
     // =========================================================

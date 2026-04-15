@@ -8,6 +8,7 @@ import com.livajq.arcanetweaks.compat.goety.ritualtype.AdeptNetherCustomRitualTy
 import com.livajq.arcanetweaks.compat.goety.ritualtype.EndCustomRitualType;
 import com.livajq.arcanetweaks.compat.goety.ritualtype.ExpertNetherCustomRitualType;
 import com.livajq.arcanetweaks.handlers.PacketHandler;
+import com.livajq.arcanetweaks.handlers.ResistanceHandler;
 import com.livajq.arcanetweaks.handlers.ResourceReloadHandler;
 import com.livajq.arcanetweaks.init.ArcaneBiomeSources;
 import com.livajq.arcanetweaks.init.ArcaneEntities;
@@ -61,6 +62,7 @@ public class ArcaneTweaks {
             BossBehaviorRegistry.init();
             BiomeConfigLoader.init();
             PacketHandler.register();
+            ResistanceHandler.init();
             //ReskillableGenerator.generateReskillableEntries();
             //ItemObliteratorGenerator.generateObliteratorBlacklist();
         });

@@ -47,6 +47,7 @@
     "emi.EmiRecipesMixin",
     "vanilla.DeathScreenMixin",
     "vanilla.LivingEntityRendererMixin",
+    "vanilla.KeyboardHandlerMixin",
     "iceandfire.MushroomCloudParticleMixin"
   ]
 }

@@ -3,11 +3,14 @@ package com.livajq.arcanetweaks.handlers;
 import com.livajq.arcanetweaks.ArcaneTweaks;
 import com.livajq.arcanetweaks.Config;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -15,12 +18,29 @@ import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = ArcaneTweaks.MODID)
 public class ResistanceHandler {
     private static final UUID FIRE_MAGIC_RES_UUID = UUID.fromString("d4e8f2d0-6c4a-4b6e-9f1a-2b7a6e3c1a11");
+    private static final UUID ICE_MAGIC_RES_UUID = UUID.fromString("d4e8f2d0-6c4a-4b6e-9f1a-2b7a6e3c1a12");
+    private static final UUID LIGHTNING_MAGIC_RES_UUID = UUID.fromString("d4e8f2d0-6c4a-4b6e-9f1a-2b7a6e3c1a13");
+    
+    private static final Map<MobEffect, MagicResData> RESISTANCES = new HashMap<>();
+    
+    public static void init() {
+        RESISTANCES.put(MobEffects.FIRE_RESISTANCE, new MagicResData(MobEffects.FIRE_RESISTANCE, AttributeRegistry.FIRE_MAGIC_RESIST.get(), FIRE_MAGIC_RES_UUID, Config.fireResistanceAmount));
+        
+        MobEffect ice = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation("trinketsandbaubles", "ice_resistance"));
+        if (ice != null) RESISTANCES.put(ice, new MagicResData(ice, AttributeRegistry.ICE_MAGIC_RESIST.get(), ICE_MAGIC_RES_UUID, Config.iceResistanceAmount));
+        
+        MobEffect lightning = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation("trinketsandbaubles", "lightning_resistance"));
+        if (lightning != null) RESISTANCES.put(lightning, new MagicResData(lightning, AttributeRegistry.LIGHTNING_MAGIC_RESIST.get(), LIGHTNING_MAGIC_RES_UUID, Config.lightningResistanceAmount));
+    }
     
     @SubscribeEvent
     public static void customResistanceCalc(LivingDamageEvent event) {
@@ -49,34 +69,36 @@ public class ResistanceHandler {
     }
     
     @SubscribeEvent
-    public static void addFireMagicResBonus(MobEffectEvent.Added event) {
+    public static void addMagicResBonus(MobEffectEvent.Added event) {
         LivingEntity entity = event.getEntity();
-        MobEffectInstance instance = event.getEffectInstance();
-        if (instance == null || entity == null) return;
+        MobEffectInstance inst = event.getEffectInstance();
+        if (entity == null || inst == null) return;
         
-        if (instance.getEffect() != MobEffects.FIRE_RESISTANCE) return;
+        MagicResData data = RESISTANCES.get(inst.getEffect());
+        if (data == null) return;
         
-        AttributeInstance attr = entity.getAttribute(AttributeRegistry.FIRE_MAGIC_RESIST.get());
-        
+        AttributeInstance attr = entity.getAttribute(data.attribute());
         if (attr == null) return;
         
-        double value = (instance.getAmplifier() + 1) * Config.fireResistanceAmount;
+        double value = (inst.getAmplifier() + 1) * data.multiplier();
         
-        attr.removeModifier(FIRE_MAGIC_RES_UUID);
-        
+        attr.removeModifier(data.uuid());
         attr.addPermanentModifier(
-                new AttributeModifier(FIRE_MAGIC_RES_UUID, "Fire magic res bonus", value, AttributeModifier.Operation.MULTIPLY_TOTAL)
+                new AttributeModifier(data.uuid(), "Elemental magic res bonus", value, AttributeModifier.Operation.MULTIPLY_TOTAL)
         );
     }
     
     @SubscribeEvent
-    public static void removeFireMagicResBonus(MobEffectEvent.Remove event) {
+    public static void removeMagicResBonus(MobEffectEvent.Remove event) {
         LivingEntity entity = event.getEntity();
         if (entity == null) return;
-        if (event.getEffect() != MobEffects.FIRE_RESISTANCE) return;
         
-        AttributeInstance attr = entity.getAttribute(AttributeRegistry.FIRE_MAGIC_RESIST.get());
-        if (attr != null) attr.removeModifier(FIRE_MAGIC_RES_UUID);
+        MagicResData data = RESISTANCES.get(event.getEffect());
+        if (data == null) return;
         
+        AttributeInstance attr = entity.getAttribute(data.attribute());
+        if (attr != null) attr.removeModifier(data.uuid());
     }
+    
+    private record MagicResData(MobEffect effect, Attribute attribute, UUID uuid, double multiplier) {}
 }
