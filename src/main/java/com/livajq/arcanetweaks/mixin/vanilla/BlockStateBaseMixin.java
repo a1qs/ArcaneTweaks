@@ -3,6 +3,7 @@ package com.livajq.arcanetweaks.mixin.vanilla;
 import com.livajq.arcanetweaks.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -27,15 +28,19 @@ public abstract class BlockStateBaseMixin {
         ResourceLocation plantId = ForgeRegistries.BLOCKS.getKey(plant);
         if (plantId == null) return;
         
-        Set<ResourceLocation> allowed = Config.extraPlantSurfaces.get(plantId);
-        if (allowed == null) return;
-        
         BlockState ground = level.getBlockState(pos.below());
         ResourceLocation groundId = ForgeRegistries.BLOCKS.getKey(ground.getBlock());
         if (groundId == null) return;
         
-        if (allowed.contains(groundId)) {
-            cir.setReturnValue(true);
-        }
+        boolean inWater = level.getFluidState(pos).is(FluidTags.WATER);
+        
+        Set<ResourceLocation> allowed;
+        
+        if (inWater) allowed = Config.extraPlantSurfacesWater.get(plantId);
+        else allowed = Config.extraPlantSurfaces.get(plantId);
+        
+        if (allowed == null) return;
+        
+        if (allowed.contains(groundId)) cir.setReturnValue(true);
     }
 }

@@ -37,11 +37,13 @@
     "iceandfire.FrozenDataMixin",
     "iceandfire.EntitySeaSerpentMixin",
     "iceandfire.FlyingAITargetMixin",
+    "iceandfire.ItemHydraHeartMixin",
     "lendercataclysm.Ignis_EntityMixin",
     "majruszlibrary.LootHelperMixin",
     "lostcities.BuildingInfoMixin",
     "namelesstrinkets.LootTableHandlerMixin",
-    "eeeabsmobs.EMArmorMaterialMixin"
+    "eeeabsmobs.EMArmorMaterialMixin",
+    "bclib.UnderwaterPlantBlockMixin"
   ],
   "client": [
     "emi.EmiRecipesMixin",

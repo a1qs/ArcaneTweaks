@@ -32,6 +32,7 @@ public final class Config {
     
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> EXTRA_ALLIES;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> EXTRA_PLANT_SURFACES;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> EXTRA_PLANT_SURFACES_WATER;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_TEMPERATURE_IMMUNITY;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_THIRST_IMMUNITY;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> FOOD_EXHAUSTION_IMMUNITY;
@@ -213,6 +214,17 @@ public final class Config {
                         List.of("extraPlantSurfaces"),
                         List.of("betterend:dragon_tree_sapling - minecraft:stone, minecraft:grass_block, minecraft:end_stone",
                                 "betterend:tenanea_sapling - minecraft:obsidian, minecraft:prismarine"
+                        ),
+                        o -> o instanceof String
+                );
+        
+        EXTRA_PLANT_SURFACES_WATER = BUILDER
+                .comment(
+                        "Use this list for plants meant to only be placed underwater"
+                )
+                .defineListAllowEmpty(
+                        List.of("extraPlantSurfacesWater"),
+                        List.of("betterend:hydralux_sapling - minecraft:stone, minecraft:grass_block"
                         ),
                         o -> o instanceof String
                 );
@@ -438,6 +450,7 @@ public final class Config {
     public static Set<String> villagerBookBlacklistSet;
  
     public static Map<ResourceLocation, Set<ResourceLocation>> extraPlantSurfaces = new HashMap<>();
+    public static Map<ResourceLocation, Set<ResourceLocation>> extraPlantSurfacesWater = new HashMap<>();
     public static Map<SkillAttributeBonus, Supplier<Attribute>> reskillableAttributeBonuses = new HashMap<>();
     public static Map<EntityType<?>, MobStats> mobAttributeModifiers = new HashMap<>();
     public static Map<ResourceLocation, Integer> enchantmentTiers = new HashMap<>();
@@ -507,7 +520,8 @@ public final class Config {
         emiRecipeWhitelistSet = new HashSet<>(EMI_RECIPE_WHITELIST.get());
         dragonNukeImmuneSet = new HashSet<>(DRAGON_NUKE_IMMUNE.get());
         villagerBookBlacklistSet = new HashSet<>(VILLAGER_BOOK_BLACKLIST.get());
-        extraPlantSurfaces = parsePlantSurfaces();
+        extraPlantSurfaces = parsePlantSurfaces(false);
+        extraPlantSurfacesWater = parsePlantSurfaces(true);
         reskillableAttributeBonuses = parseReskillableBonuses();
         mobAttributeModifiers = parseMobAttributeModifiers();
         enchantmentTiers = parseEnchantmentTiers();
@@ -560,10 +574,11 @@ public final class Config {
     // Helpers
     // =========================================================
     
-    private static Map<ResourceLocation, Set<ResourceLocation>> parsePlantSurfaces() {
+    private static Map<ResourceLocation, Set<ResourceLocation>> parsePlantSurfaces(boolean water) {
         Map<ResourceLocation, Set<ResourceLocation>> map = new HashMap<>();
         
-        for (String line : EXTRA_PLANT_SURFACES.get()) {
+        List<? extends String> surfaces = water ? EXTRA_PLANT_SURFACES_WATER.get() : EXTRA_PLANT_SURFACES.get();
+        for (String line : surfaces) {
             String[] split = line.split("-");
             if (split.length != 2) continue;
             

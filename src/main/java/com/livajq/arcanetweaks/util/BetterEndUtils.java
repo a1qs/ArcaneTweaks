@@ -12,20 +12,20 @@ import java.util.Set;
 public class BetterEndUtils {
     
     public static boolean isProperSurfaceOrTag(Block plant, BlockState state, TagKey<Block> tag) {
-        if (isProperSurface(plant, state)) return true;
+        if (isProperSurface(plant, state, false)) return true;
         return state.is(tag);
     }
     
     public static boolean isProperSurfaceOrBlock(Block plant, BlockState state, Block block) {
-        if (isProperSurface(plant, state)) return true;
+        if (isProperSurface(plant, state, false)) return true;
         return state.is(block);
     }
     
-    private static boolean isProperSurface(Block plant, BlockState state) {
+    public static boolean isProperSurface(Block plant, BlockState state, boolean water) {
         ResourceLocation plantId = ForgeRegistries.BLOCKS.getKey(plant);
         if (plantId == null) return false;
         
-        Set<ResourceLocation> allowed = Config.extraPlantSurfaces.get(plantId);
+        Set<ResourceLocation> allowed = water ? Config.extraPlantSurfacesWater.get(plantId) : Config.extraPlantSurfaces.get(plantId);
         if (allowed == null) return false;
         
         ResourceLocation blockId = ForgeRegistries.BLOCKS.getKey(state.getBlock());
