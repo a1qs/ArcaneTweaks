@@ -1,6 +1,8 @@
 package com.livajq.arcanetweaks;
 
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeArmorData;
+import com.Harbinger.Spore.Sitems.BaseWeapons.SporeBaseArmor;
+import com.Harbinger.Spore.Sitems.BaseWeapons.SporeToolsBaseItem;
 import com.Harbinger.Spore.Sitems.BaseWeapons.SporeWeaponData;
 import com.Polarice3.Goety.api.ritual.RitualType;
 import com.livajq.arcanetweaks.bossbehavior.BossBehaviorRegistry;
@@ -99,11 +101,11 @@ public class ArcaneTweaks {
             });
         }
         
-        @SubscribeEvent(priority = EventPriority.HIGHEST)
+        @SubscribeEvent(priority = EventPriority.LOWEST)
         public static void registerItemColorHandlers(RegisterColorHandlersEvent.Item event) {
             for (Item item : ForgeRegistries.ITEMS.getValues()) {
-                if (item instanceof SporeWeaponData data) event.register((itemStack, tintIndex) -> tintIndex == 0 ? data.getVariant(itemStack).getColor() : -1, item);
-                if (item instanceof SporeArmorData data) event.register((itemStack, tintIndex) -> tintIndex == 0 ? data.getVariant(itemStack).getColor() : -1, item);
+                if (!(item instanceof SporeToolsBaseItem) && item instanceof SporeWeaponData data) event.register((itemStack, tintIndex) -> tintIndex == 0 ? data.getVariant(itemStack).getColor() : -1, item);
+                if (!(item instanceof SporeBaseArmor) && item instanceof SporeArmorData data) event.register((itemStack, tintIndex) -> tintIndex == 0 ? data.getVariant(itemStack).getColor() : -1, item);
             }
         }
     }

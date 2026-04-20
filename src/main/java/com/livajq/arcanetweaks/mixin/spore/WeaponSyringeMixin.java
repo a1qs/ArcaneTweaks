@@ -1,8 +1,8 @@
 package com.livajq.arcanetweaks.mixin.spore;
 
 import com.Harbinger.Spore.Sitems.Agents.AbstractSyringe;
-import com.Harbinger.Spore.Sitems.Agents.ArmorSyringe;
-import com.Harbinger.Spore.Sitems.BaseWeapons.SporeArmorMutations;
+import com.Harbinger.Spore.Sitems.Agents.WeaponSyringe;
+import com.Harbinger.Spore.Sitems.BaseWeapons.SporeToolsMutations;
 import com.livajq.arcanetweaks.Config;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -16,21 +16,22 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ArmorSyringe.class)
-public abstract class ArmorSyringeMixin extends AbstractSyringe {
+@Mixin(WeaponSyringe.class)
+public abstract class WeaponSyringeMixin extends AbstractSyringe {
     
     @Shadow
     @Final
-    private SporeArmorMutations mutations;
+    private SporeToolsMutations mutations;
     
     @Inject(method = "useSyringe", at = @At("HEAD"), cancellable = true, remap = false)
     private void applyAlternativeEffects(ItemStack stack, LivingEntity living, CallbackInfo ci) {
         
         Config.SporeMutationEffect mutation = switch (mutations) {
-            case REINFORCED -> Config.sporeMutationEffectReinforced;
-            case SKELETAL -> Config.sporeMutationEffectSkeletal;
-            case DROWNED -> Config.sporeMutationEffectDrowned;
-            case CHARRED -> Config.sporeMutationEffectCharred;
+            case VAMPIRIC -> Config.sporeMutationEffectVampiric;
+            case CALCIFIED -> Config.sporeMutationEffectCalcified;
+            case BEZERK -> Config.sporeMutationEffectBezerk;
+            case TOXIC -> Config.sporeMutationEffectToxic;
+            case ROTTEN -> Config.sporeMutationEffectRotten;
             default -> null;
         };
         

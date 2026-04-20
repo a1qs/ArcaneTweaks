@@ -94,7 +94,7 @@ dependencies {
     implementation fg.deobf("curse.maven:enhanced-ai-${enhanced_ai_version}")
     implementation fg.deobf("curse.maven:insanelib-${insanelib_version}")
     implementation fg.deobf("curse.maven:spartan-weaponry-${spartan_weaponry_version}")
-    implementation fg.deobf("curse.maven:fungal-infection-spore-678295:7922841")
+    implementation fg.deobf("curse.maven:fungal-infection-spore-${spore_version}")
 }
 
 mixin {

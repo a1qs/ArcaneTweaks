@@ -1,31 +1,27 @@
 package com.livajq.arcanetweaks.handlers;
 
-import com.Harbinger.Spore.Sitems.BaseWeapons.SporeArmorData;
-import com.Harbinger.Spore.Sitems.BaseWeapons.SporeArmorMutations;
-import com.Harbinger.Spore.Sitems.BaseWeapons.SporeBaseArmor;
+import com.Harbinger.Spore.Sitems.BaseWeapons.*;
 import com.github.alexmodguy.alexscaves.server.entity.living.ForsakenEntity;
 import com.livajq.arcanetweaks.ArcaneTweaks;
 import com.livajq.arcanetweaks.Config;
 import com.livajq.arcanetweaks.util.SporeUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = ArcaneTweaks.MODID)
@@ -78,23 +74,44 @@ public class SporeHandler {
         Player player = event.player;
         if (player.tickCount % 100 != 0) return;
         
-        SporeUtils.setBonusForArmorMutation(player);
+        SporeUtils.applyArmorMutationEffects(player);
+    }
+    
+    @SubscribeEvent
+    public static void onLivingHurt2(LivingHurtEvent event) {
+        Entity entity = event.getSource().getEntity();
+        if (!(entity instanceof LivingEntity attacker)) return;
+        
+        if (!(attacker.getMainHandItem().getItem() instanceof SporeWeaponData) && !(attacker.getOffhandItem().getItem() instanceof SporeWeaponData)) return;
+        
+        SporeUtils.applyWeaponMutationEffects(attacker);
     }
     
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void onTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
-        if (!(stack.getItem() instanceof SporeArmorData data)) return;
-        if (stack.getItem() instanceof SporeBaseArmor) return;
+        Item item = stack.getItem();
+        if (item instanceof SporeBaseArmor || item instanceof SporeSwordBase) return;
         
-        SporeArmorMutations mutation = data.getVariant(stack);
-        if (mutation == SporeArmorMutations.DEFAULT) return;
+        String name;
+        
+        if (item instanceof SporeArmorData armorData) {
+            SporeArmorMutations mutation = armorData.getVariant(stack);
+            if (mutation == SporeArmorMutations.DEFAULT) return;
+            name = mutation.getName();
+        }
+        else if (item instanceof SporeWeaponData weaponData) {
+            SporeToolsMutations mutation = weaponData.getVariant(stack);
+            if (mutation == SporeToolsMutations.DEFAULT) return;
+            name = mutation.getName();
+        }
+        else return;
         
         List<Component> tooltip = event.getToolTip();
         
         Component line = Component.literal("Mutation: ")
-                .append(Component.translatable(mutation.getName()))
+                .append(Component.translatable(name))
                 .withStyle(ChatFormatting.DARK_GREEN);
         
         tooltip.add(1, line);
