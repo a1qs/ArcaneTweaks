@@ -45,7 +45,8 @@
     "lostcities.BuildingInfoMixin",
     "namelesstrinkets.LootTableHandlerMixin",
     "eeeabsmobs.EMArmorMaterialMixin",
-    "bclib.UnderwaterPlantBlockMixin"
+    "bclib.UnderwaterPlantBlockMixin",
+    "spartanweaponry.MobMixinSquared"
   ],
   "client": [
     "emi.EmiRecipesMixin",
