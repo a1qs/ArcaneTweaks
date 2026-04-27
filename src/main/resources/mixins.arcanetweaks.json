@@ -16,6 +16,7 @@
     "vanilla.EnchantmentMixin",
     "vanilla.EnchantBookForEmeraldsMixin",
     "vanilla.ArmorItemMixin",
+    "vanilla.SwordItemMixin",
     "vanilla.ItemStackMixin",
     "betterend.DragonTreeFeatureMixin",
     "betterend.GiganticAmaranitaFeatureMixin",
@@ -46,6 +47,8 @@
     "namelesstrinkets.LootTableHandlerMixin",
     "eeeabsmobs.EMArmorMaterialMixin",
     "bclib.UnderwaterPlantBlockMixin",
+    "spore.ArmorSyringeMixin",
+    "spore.WeaponSyringeMixin",
     "spartanweaponry.MobMixinSquared"
   ],
   "client": [
@@ -54,6 +57,7 @@
     "vanilla.LivingEntityRendererMixin",
     "vanilla.KeyboardHandlerMixin",
     "vanilla.HumanoidArmorLayerMixin",
+    "vanilla.ItemRendererMixin",
     "iceandfire.MushroomCloudParticleMixin"
   ]
 }
