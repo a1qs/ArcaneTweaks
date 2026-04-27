@@ -34,7 +34,6 @@ public abstract class MobMixinSquared extends LivingEntity {
             )
     )
     private ItemStack redirectItemRandomizer(Level level, List<Item> items) {
-        System.out.println("Redirected SpartanWeaponry mixin to use a fixed random");
         return arcaneTweaks$generate(this.random, items);
     }
 
