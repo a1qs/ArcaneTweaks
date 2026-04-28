@@ -8,7 +8,6 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,7 +26,6 @@ public abstract class LootHelperMixin {
             ServerLevel level = server.overworld();
             Entity dummy = new Zombie(level);
 
-            
             LootParams params = new LootParams.Builder(level)
                     .withParameter(LootContextParams.THIS_ENTITY, dummy)
                     .withParameter(LootContextParams.ORIGIN, dummy.position())
